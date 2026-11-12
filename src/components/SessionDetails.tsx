@@ -4,7 +4,7 @@ import EditSessionForm from './EditSessionForm'
 import EditSetForm from './EditSetForm'
 import AddSetForm from './AddSetForm'
 import { useUnits } from '../UnitsContext'
-import { displayWeight, displayDistance, displayElevation } from '../units'
+import { displayWeight, displayDistance, displayElevation, displaySpeed } from '../units'
 
 type SessionDetailsProps = {
   backLabel?: string
@@ -210,6 +210,12 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
                       )}
                       {set.distance_km !== null && (
                         <div><dt className="text-slate-500 dark:text-slate-400">Distance</dt><dd className="mt-1 font-medium">{displayDistance(set.distance_km, unitSystem)} {unitSystem === 'imperial' ? 'mi' : 'km'}</dd></div>
+                      )}
+                      {set.distance_km !== null && set.duration_seconds !== null && set.duration_seconds > 0 && (
+                        <div>
+                          <dt className="text-slate-500 dark:text-slate-400">Avg. speed</dt>
+                          <dd className="mt-1 font-medium">{displaySpeed(Number(set.distance_km) * 3600 / set.duration_seconds, unitSystem)} {unitSystem === 'imperial' ? 'mph' : 'km/h'}</dd>
+                        </div>
                       )}
                       {set.avg_heart_rate_bpm !== null && (
                         <div><dt className="text-slate-500 dark:text-slate-400">Avg. heart rate</dt><dd className="mt-1 font-medium">{set.avg_heart_rate_bpm} bpm</dd></div>

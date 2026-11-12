@@ -12,6 +12,11 @@ export function displayDistance(km: number | string, units: UnitSystem) {
   return units === 'imperial' ? round(Number(km) / 1.609344) : Number(km)
 }
 
+export function displaySpeed(kmPerHour: number, units: UnitSystem) {
+  const speed = units === 'imperial' ? kmPerHour / 1.609344 : kmPerHour
+  return Number(speed.toFixed(2))
+}
+
 export function displayElevation(metres: number | string, units: UnitSystem) {
   return units === 'imperial' ? round(Number(metres) / 0.3048) : Number(metres)
 }

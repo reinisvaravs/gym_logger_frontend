@@ -26,7 +26,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Training history with exercise names, dates, categories, and notes.
 - History search, strength/cardio filtering, and inclusive date-range filters.
 - Monthly calendar with session counts, selected-day sessions, and logging on a chosen date.
-- Session details with ordered strength/cardio sets and measurement units.
+- Session details with ordered strength/cardio sets, measurement units, and calculated cardio average speed.
 - Editing session dates and notes from the detail screen.
 - Deleting sessions and their sets with confirmation, returning to refreshed history.
 - Editing saved set measurements with prefilled category-specific inputs.
@@ -43,6 +43,8 @@ Create an account from the login screen. Registration returns to login with the 
 Choose Metric or Imperial in the header. Metric is the default; the choice is stored as `gym-units` in localStorage for this browser, not per account.
 
 Imperial uses pounds, miles, and feet. Reps, seconds, bpm, watts, and cadence remain unchanged. The frontend converts measurements for display and converts input back to kg/km/metres before sending it to the API. Stored values and API field names remain metric.
+
+Cardio average speed is calculated from distance and duration, shown in km/h or mph to two decimal places. It is not stored as another measurement.
 
 Converted inputs/display values use up to three decimal places. Saving an unchanged measurement in the set editor preserves the exact original metric value. Open forms retain the unit system selected when they were opened; cancel/back and reopen to use a newly selected preference. This prevents existing draft numbers from being reinterpreted.
 
