@@ -1,3 +1,5 @@
+import TrashIcon from './TrashIcon'
+import PencilIcon from './PencilIcon'
 import { useState, type FormEvent } from 'react'
 import { deleteTrainingType, renameTrainingType, setTrainingTypeArchived, type TrainingType } from '../api/trainingTypes'
 
@@ -95,9 +97,9 @@ function TrainingTypeItem({ trainingType, onUpdated, onDeleted, onSignedOut }: T
         </form>
       ) : (
         <div className="mt-4 flex flex-wrap gap-4 text-sm font-medium">
-          <button type="button" disabled={isSaving} onClick={() => { setName(trainingType.training_name); setError(''); setIsEditing(true) }} className="cursor-pointer text-emerald-700 dark:text-emerald-400 underline disabled:opacity-60">Rename</button>
+          <button type="button" disabled={isSaving} onClick={() => { setName(trainingType.training_name); setError(''); setIsEditing(true) }} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer text-emerald-700 dark:text-emerald-400 disabled:opacity-60" aria-label={`Rename ${trainingType.training_name}`} title="Rename"><PencilIcon /></button>
           <button type="button" disabled={isSaving} onClick={handleArchive} className="cursor-pointer text-slate-600 dark:text-slate-300 underline disabled:opacity-60">{trainingType.archived_at ? 'Restore' : 'Archive'}</button>
-          <button type="button" disabled={isSaving} onClick={handleDelete} className="cursor-pointer text-red-700 dark:text-red-400 underline disabled:opacity-60">Delete</button>
+          <button type="button" disabled={isSaving} onClick={handleDelete} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer text-red-700 dark:text-red-400 disabled:opacity-60" aria-label={`Delete ${trainingType.training_name}`} title="Delete"><TrashIcon /></button>
         </div>
       )}
       {error && <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-400">{error}</p>}

@@ -1,3 +1,5 @@
+import TrashIcon from './TrashIcon'
+import PencilIcon from './PencilIcon'
 import { useEffect, useState } from 'react'
 import { getTrainingSession, deleteTrainingSet, deleteTrainingSession, type TrainingSessionDetails, type TrainingSet } from '../api/trainingSessions'
 import EditSessionForm from './EditSessionForm'
@@ -169,8 +171,8 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
             <div className="flex flex-wrap items-start justify-between gap-3">
               <h2 className="min-w-0 break-words text-2xl font-semibold">{session.training_name}</h2>
               <div className="flex flex-wrap gap-3">
-                <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setIsEditing(true) }} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">Edit session</button>
-                <button type="button" disabled={isBusy} onClick={handleDeleteSession} className="cursor-pointer rounded-lg border border-red-300 dark:border-red-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 disabled:opacity-60">{isDeleting ? 'Deleting…' : 'Delete session'}</button>
+                <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setIsEditing(true) }} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60" aria-label="Edit session" title="Edit session"><PencilIcon /></button>
+                <button type="button" disabled={isBusy} onClick={handleDeleteSession} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer rounded-lg border border-red-300 dark:border-red-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 disabled:opacity-60" aria-label={isDeleting ? "Deleting session" : "Delete session"} title="Delete session" aria-busy={isDeleting}><TrashIcon /></button>
               </div>
             </div>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
@@ -191,7 +193,6 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
             <h3 className="text-lg font-semibold">Sets</h3>
             <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setSetActionError(''); setIsAddingSet(true) }} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60">Add set</button>
           </div>
-          {session.sets.length === 1 && <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">A session must keep at least one set.</p>}
           {session.sets.length === 0 && <p className="text-slate-600 dark:text-slate-300">No sets saved.</p>}
           <ol className="space-y-3">
             {session.sets.map((set) => (
@@ -199,11 +200,11 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <h4 className="font-medium">Set {set.set_order}</h4>
                   <div className="flex gap-4 text-sm font-medium">
-                    <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setSetActionError(''); setEditingSet(set) }} className="cursor-pointer text-emerald-700 dark:text-emerald-400 underline disabled:opacity-60">Edit set</button>
-                    <button type="button" disabled={isBusy || session.sets.length <= 1} onClick={() => handleRemoveSet(set)} className="cursor-pointer text-red-700 dark:text-red-400 underline disabled:cursor-not-allowed disabled:opacity-50">{deletingSetId === set.id ? 'Removing…' : 'Remove set'}</button>
+                    <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setSetActionError(''); setEditingSet(set) }} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer text-emerald-700 dark:text-emerald-400 disabled:opacity-60" aria-label={`Edit set ${set.set_order}`} title="Edit set"><PencilIcon /></button>
+                    <button type="button" disabled={isBusy || session.sets.length <= 1} onClick={() => handleRemoveSet(set)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer text-red-700 dark:text-red-400 disabled:cursor-not-allowed disabled:opacity-50" aria-label={deletingSetId === set.id ? "Removing set" : `Remove set ${set.set_order}`} title="Remove set" aria-busy={deletingSetId === set.id}><TrashIcon /></button>
                   </div>
                 </div>
-                <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
+                <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
                   {session.category === 'cardio' ? (
                     <>
                       {set.duration_seconds !== null && (

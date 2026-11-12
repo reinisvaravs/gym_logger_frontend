@@ -1,3 +1,4 @@
+import TrashIcon from './TrashIcon'
 import { useState, type FormEvent } from 'react'
 import { changePassword, deleteAccount } from '../api/auth'
 
@@ -100,7 +101,7 @@ function AccountSettings({ onBack, onSignedOut }: AccountSettingsProps) {
             <input id="delete-account-password" name="currentPassword" type="password" autoComplete="current-password" required minLength={4} maxLength={255} value={deletePassword} onChange={(event) => setDeletePassword(event.target.value)} className={inputClass} />
           </div>
           {deleteError && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{deleteError}</p>}
-          <button type="submit" className="cursor-pointer rounded-lg bg-red-700 px-4 py-2 font-medium text-white hover:bg-red-800 disabled:opacity-60">{isDeleting ? 'Deleting account…' : 'Delete my account'}</button>
+          <button type="submit" className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer rounded-lg bg-red-700 px-4 py-2 font-medium text-white hover:bg-red-800 disabled:opacity-60" aria-label={isDeleting ? "Deleting account" : "Delete my account"} title="Delete my account" aria-busy={isDeleting}><TrashIcon /></button>
         </fieldset>
       </form>
     </section>

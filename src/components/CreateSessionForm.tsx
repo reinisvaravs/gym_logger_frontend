@@ -1,3 +1,4 @@
+import TrashIcon from './TrashIcon'
 import { useEffect, useState, type FormEvent } from 'react'
 import { getTrainingTypes, type TrainingType } from '../api/trainingTypes'
 import { createTrainingSession, getTrainingSessions } from '../api/trainingSessions'
@@ -125,7 +126,7 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initia
               <div key={`${selectedType.id}-${id}`} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <h3 className="font-semibold">Set {index + 1}</h3>
-                  {setIds.length > 1 && <button type="button" onClick={() => setSetIds(setIds.filter((setId) => setId !== id))} className="cursor-pointer text-sm text-red-700 dark:text-red-400 underline">Remove set</button>}
+                  {setIds.length > 1 && <button type="button" onClick={() => setSetIds(setIds.filter((setId) => setId !== id))} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer text-sm text-red-700 dark:text-red-400 underline" aria-label={`Remove set ${index + 1}`} title="Remove set"><TrashIcon /></button>}
                 </div>
                 <SessionSetFields units={formUnits} setId={id} category={selectedType.category} />
               </div>
