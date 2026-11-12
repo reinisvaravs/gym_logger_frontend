@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { getTrainingSession, type TrainingSessionDetails } from '../api/trainingSessions'
+import { getTrainingSession, type TrainingSessionDetails, type TrainingSet } from '../api/trainingSessions'
 import EditSessionForm from './EditSessionForm'
+import EditSetForm from './EditSetForm'
 
 type SessionDetailsProps = {
   sessionId: string
@@ -15,6 +16,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
   const [retryCount, setRetryCount] = useState(0)
   const [isEditing, setIsEditing] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [editingSet, setEditingSet] = useState<TrainingSet | null>(null)
 
   useEffect(() => {
     let active = true
@@ -44,6 +46,22 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
     setError('')
     setIsLoading(true)
     setRetryCount(retryCount + 1)
+  }
+
+  if (editingSet && session) {
+    return <EditSetForm
+      key={editingSet.id}
+      sessionId={session.id}
+      set={editingSet}
+      category={session.category}
+      onSignedOut={onSignedOut}
+      onCancel={() => setEditingSet(null)}
+      onSaved={(updated) => {
+        setSession({ ...session, sets: session.sets.map((set) => set.id === updated.id ? updated : set) })
+        setEditingSet(null)
+        setSuccessMessage('Set updated.')
+      }}
+    />
   }
 
   if (isEditing && session) {
@@ -100,7 +118,10 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
           <ol className="space-y-3">
             {session.sets.map((set) => (
               <li key={set.id} className="rounded-xl border border-slate-200 bg-white p-5">
-                <h4 className="mb-3 font-medium">Set {set.set_order}</h4>
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h4 className="font-medium">Set {set.set_order}</h4>
+                  <button type="button" onClick={() => { setSuccessMessage(''); setEditingSet(set) }} className="cursor-pointer text-sm font-medium text-emerald-700 underline">Edit set</button>
+                </div>
                 <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
                   {session.category === 'cardio' ? (
                     <>

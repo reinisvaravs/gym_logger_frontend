@@ -22,12 +22,13 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Training history with exercise names, dates, categories, and notes.
 - Session details with ordered strength/cardio sets and measurement units.
 - Editing session dates and notes from the detail screen.
+- Editing saved set measurements with prefilled category-specific inputs.
 - Training library with creating, renaming, archiving, restoring, and deleting unused types.
 - Session logging with an active type, date, notes, and multiple strength/cardio sets.
 - Loading, empty, and error states with retry.
 - Logout and return to login when history requests report an expired session.
 
-Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Saved-set editing and session deletion screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Adding/removing saved sets and deleting sessions from the detail screen are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
 
 ## Manual checks
 
@@ -72,6 +73,14 @@ Session editing checks:
 - Return to history and confirm the new date and notes are visible.
 - Edit and cancel; no data should change.
 - Stop the backend before saving; the form should show an error and retain input.
+
+Set editing checks:
+
+- Open a session, choose Edit set, and confirm the saved measurements are prefilled.
+- Change reps/weight or cardio measurements, save, and verify details and a browser refresh show the update.
+- Clear optional added weight or cardio measurements and save; required measurements must remain filled.
+- Cancel edits; the saved set should remain unchanged.
+- Try saving while the backend is unavailable; the form should retain input and allow retry.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

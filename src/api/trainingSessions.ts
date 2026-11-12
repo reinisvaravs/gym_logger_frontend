@@ -114,6 +114,25 @@ type TrainingSessionInput = {
   sets: TrainingSetInput[]
 }
 
+export async function updateTrainingSet(
+  sessionId: string,
+  setId: string,
+  input: TrainingSetInput,
+): Promise<TrainingSet | null> {
+  const response = await fetch(`${apiUrl}/training-sessions/${sessionId}/sets/${setId}`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (response.status === 401) return null
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not update this set.')
+  }
+  return response.json()
+}
+
 export async function createTrainingSession(input: TrainingSessionInput): Promise<{ id: string } | null> {
   const response = await fetch(`${apiUrl}/training-sessions`, {
     method: 'POST',

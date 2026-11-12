@@ -1,0 +1,68 @@
+import { useState, type FormEvent } from 'react'
+import { updateTrainingSet, type TrainingSet } from '../api/trainingSessions'
+import type { TrainingCategory } from '../api/trainingTypes'
+import SessionSetFields from './SessionSetFields'
+
+type EditSetFormProps = {
+  sessionId: string
+  set: TrainingSet
+  category: TrainingCategory
+  onSaved: (set: TrainingSet) => void
+  onCancel: () => void
+  onSignedOut: () => void
+}
+
+function EditSetForm({ sessionId, set, category, onSaved, onCancel, onSignedOut }: EditSetFormProps) {
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (isSaving) return
+
+    const form = new FormData(event.currentTarget)
+    function readNumber(name: string) {
+      const value = form.get(`${name}-${set.id}`)
+      return value === null || value === '' ? null : Number(value)
+    }
+
+    setError('')
+    setIsSaving(true)
+    try {
+      const updated = await updateTrainingSet(sessionId, set.id, {
+        reps: readNumber('reps'),
+        weightKg: readNumber('weightKg'),
+        durationSeconds: readNumber('durationSeconds'),
+        distanceKm: readNumber('distanceKm'),
+        avgHeartRateBpm: readNumber('avgHeartRateBpm'),
+        avgPowerWatts: readNumber('avgPowerWatts'),
+        avgCadence: readNumber('avgCadence'),
+        elevationGainM: readNumber('elevationGainM'),
+      })
+      if (!updated) return onSignedOut()
+      onSaved(updated)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Could not update this set.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  return (
+    <section aria-labelledby="edit-set-heading">
+      <h2 id="edit-set-heading" className="text-2xl font-semibold">Edit set {set.set_order}</h2>
+      <form onSubmit={handleSubmit} className="mt-6 rounded-xl border border-slate-200 bg-white p-5" aria-busy={isSaving}>
+        <fieldset disabled={isSaving} className="space-y-5">
+          <SessionSetFields setId={set.id} category={category} initialSet={set} />
+          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+          <div className="flex flex-wrap gap-3">
+            <button type="submit" className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 font-medium text-white hover:bg-emerald-800 disabled:opacity-60">{isSaving ? 'Saving…' : 'Save changes'}</button>
+            <button type="button" onClick={onCancel} className="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 font-medium hover:bg-slate-100 disabled:opacity-60">Cancel</button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+  )
+}
+
+export default EditSetForm
