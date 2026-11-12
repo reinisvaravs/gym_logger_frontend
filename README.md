@@ -21,10 +21,11 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
 - Session details with ordered strength/cardio sets and measurement units.
+- Training library with creating, renaming, archiving, restoring, and deleting unused types.
 - Loading, empty, and error states with retry.
 - Logout and return to login when history requests report an expired session.
 
-Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Training-editing screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Session creation and editing screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
 
 ## Manual checks
 
@@ -40,6 +41,15 @@ With both servers running:
 8. Invalidate the browser session through the backend, then refresh; expect login instead of private history.
 
 Also try registering an existing email; the form should show the duplicate-account error.
+
+Training library checks:
+
+- Open Manage training types, add an exercise, and rename it.
+- Repeat an existing name; expect the backend duplicate-name error.
+- Archive and restore a type; check its badge changes.
+- Cancel deletion, then delete an unused disposable type.
+- Try deleting a type used by sessions; expect the message to archive it instead.
+- Return to history and check renamed exercises show the new name.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

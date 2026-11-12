@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { logout } from '../api/auth'
 import { getTrainingSessions, type TrainingSession } from '../api/trainingSessions'
 import SessionDetails from './SessionDetails'
+import TrainingLibrary from './TrainingLibrary'
 
 type TrainingHistoryProps = {
   onSignedOut: () => void
@@ -15,6 +16,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [logoutError, setLogoutError] = useState('')
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
+  const [showLibrary, setShowLibrary] = useState(false)
 
   useEffect(() => {
     let active = true
@@ -61,6 +63,13 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
     }
   }
 
+  if (showLibrary) {
+    return <TrainingLibrary onSignedOut={onSignedOut} onBack={() => {
+      setShowLibrary(false)
+      retry()
+    }} />
+  }
+
   if (selectedSessionId) {
     return (
       <SessionDetails
@@ -87,6 +96,10 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
       </div>
 
       {logoutError && <p role="alert" className="mb-4 text-sm text-red-700">{logoutError}</p>}
+
+      <button type="button" onClick={() => setShowLibrary(true)} className="mb-6 cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">
+        Manage training types
+      </button>
 
       {isLoading ? (
         <p role="status" className="text-slate-600">Loading training history…</p>
