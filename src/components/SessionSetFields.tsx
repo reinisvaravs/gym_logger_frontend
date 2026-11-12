@@ -21,8 +21,8 @@ function SessionSetFields({ setId, category, initialSet, units }: SessionSetFiel
         {category === 'cardio' ? (
           <>
             <div>
-              <label htmlFor={`duration-${setId}`} className="block text-sm font-medium">Duration (seconds)</label>
-              <input id={`duration-${setId}`} name={`durationSeconds-${setId}`} type="number" min="1" step="1" required defaultValue={initialSet?.duration_seconds ?? ''} className={inputClass} />
+              <label htmlFor={`duration-${setId}`} className="block text-sm font-medium">Duration (minutes)</label>
+              <input id={`duration-${setId}`} name={`durationMinutes-${setId}`} type="number" min={1 / 60} step="any" required defaultValue={initialSet?.duration_seconds != null ? initialSet.duration_seconds / 60 : ''} className={inputClass} />
             </div>
             <div>
               <label htmlFor={`distance-${setId}`} className="block text-sm font-medium">Distance ({distanceUnit})</label>

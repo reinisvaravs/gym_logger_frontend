@@ -10,6 +10,7 @@ export function readSetInput(form: FormData, id: number | string, units: UnitSys
   const weight = readNumber('weightKg')
   const distance = readNumber('distanceKm')
   const elevation = readNumber('elevationGainM')
+  const durationMinutes = readNumber('durationMinutes')
   let weightKg = metricWeight(weight, units)
   let distanceKm = metricDistance(distance, units)
   let elevationGainM = metricElevation(elevation, units)
@@ -28,7 +29,7 @@ export function readSetInput(form: FormData, id: number | string, units: UnitSys
   return {
     reps: readNumber('reps'),
     weightKg,
-    durationSeconds: readNumber('durationSeconds'),
+    durationSeconds: durationMinutes === null ? null : Math.round(durationMinutes * 60),
     distanceKm,
     avgHeartRateBpm: readNumber('avgHeartRateBpm'),
     avgPowerWatts: readNumber('avgPowerWatts'),

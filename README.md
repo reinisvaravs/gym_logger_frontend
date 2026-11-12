@@ -46,6 +46,8 @@ Imperial uses pounds, miles, and feet. Reps, seconds, bpm, watts, and cadence re
 
 Converted inputs/display values use up to three decimal places. Saving an unchanged measurement in the set editor preserves the exact original metric value. Open forms retain the unit system selected when they were opened; cancel/back and reopen to use a newly selected preference. This prevents existing draft numbers from being reinterpreted.
 
+Cardio forms accept duration in minutes, including decimals (for example, `1.5` minutes). The frontend converts to whole seconds for the API, rounding to the nearest second. Existing durations are converted back to minutes in the set editor.
+
 ## Manual checks
 
 With both servers running:
