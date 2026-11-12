@@ -49,8 +49,12 @@ export async function getTrainingSession(id: string): Promise<TrainingSessionDet
   return response.json()
 }
 
-export async function getTrainingSessions(): Promise<TrainingSession[] | null> {
-  const response = await fetch(`${apiUrl}/training-sessions`, {
+export async function getTrainingSessions(from?: string, to?: string): Promise<TrainingSession[] | null> {
+  const params = new URLSearchParams()
+  if (from) params.set('from', from)
+  if (to) params.set('to', to)
+
+  const response = await fetch(`${apiUrl}/training-sessions?${params}`, {
     credentials: 'include',
   })
 
@@ -62,5 +66,39 @@ export async function getTrainingSessions(): Promise<TrainingSession[] | null> {
     throw new Error('Could not load your training history. Please try again.')
   }
 
+  return response.json()
+}
+
+export type TrainingSetInput = {
+  reps: number | null
+  weightKg: number | null
+  durationSeconds: number | null
+  distanceKm: number | null
+  avgHeartRateBpm: number | null
+  avgPowerWatts: number | null
+  avgCadence: number | null
+  elevationGainM: number | null
+}
+
+type TrainingSessionInput = {
+  trainingTypeId: string
+  performedOn: string
+  sessionOrder: number
+  notes: string
+  sets: TrainingSetInput[]
+}
+
+export async function createTrainingSession(input: TrainingSessionInput): Promise<{ id: string } | null> {
+  const response = await fetch(`${apiUrl}/training-sessions`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (response.status === 401) return null
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not save this training session.')
+  }
   return response.json()
 }

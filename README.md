@@ -22,10 +22,11 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Training history with exercise names, dates, categories, and notes.
 - Session details with ordered strength/cardio sets and measurement units.
 - Training library with creating, renaming, archiving, restoring, and deleting unused types.
+- Session logging with an active type, date, notes, and multiple strength/cardio sets.
 - Loading, empty, and error states with retry.
 - Logout and return to login when history requests report an expired session.
 
-Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Session creation and editing screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Session and saved-set editing screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
 
 ## Manual checks
 
@@ -50,6 +51,17 @@ Training library checks:
 - Cancel deletion, then delete an unused disposable type.
 - Try deleting a type used by sessions; expect the message to archive it instead.
 - Return to history and check renamed exercises show the new name.
+
+Session logging checks:
+
+- Choose Log session and save a weighted session with multiple sets; expect its details to open.
+- Return to history and confirm the new session is listed. Log another session on the same date.
+- Log bodyweight without added weight and cardio with optional measurements.
+- Add/remove draft sets; changing exercise should clear them without clearing the date or notes.
+- Archive all training types, then open Log session; expect a link to the library.
+- Stop the backend before saving; check that input remains available for retry.
+
+Session positions are chosen from the latest sessions on the selected date just before saving. If another request takes that position first, the backend returns a conflict; submitting again fetches the positions again.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 
