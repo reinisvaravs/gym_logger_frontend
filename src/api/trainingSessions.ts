@@ -88,10 +88,24 @@ export async function getTrainingSession(id: string): Promise<TrainingSessionDet
   return response.json()
 }
 
-export async function getTrainingSessions(from?: string, to?: string): Promise<TrainingSession[] | null> {
+export type TrainingSessionFilters = {
+  search: string
+  category: '' | 'strength' | 'cardio'
+  from: string
+  to: string
+}
+
+export async function getTrainingSessions(
+  from?: string,
+  to?: string,
+  search?: string,
+  category?: string,
+): Promise<TrainingSession[] | null> {
   const params = new URLSearchParams()
   if (from) params.set('from', from)
   if (to) params.set('to', to)
+  if (search) params.set('search', search)
+  if (category) params.set('category', category)
 
   const response = await fetch(`${apiUrl}/training-sessions?${params}`, {
     credentials: 'include',
@@ -102,7 +116,8 @@ export async function getTrainingSessions(from?: string, to?: string): Promise<T
   }
 
   if (!response.ok) {
-    throw new Error('Could not load your training history. Please try again.')
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not load your training history. Please try again.')
   }
 
   return response.json()

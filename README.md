@@ -20,6 +20,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
+- History search, strength/cardio filtering, and inclusive date-range filters.
 - Session details with ordered strength/cardio sets and measurement units.
 - Editing session dates and notes from the detail screen.
 - Deleting sessions and their sets with confirmation, returning to refreshed history.
@@ -99,6 +100,16 @@ Session deletion checks:
 - Confirm deletion; expect refreshed history without the session. Refresh the browser to verify.
 - Delete a session containing a single set; whole-session deletion should still be allowed.
 - Stop the backend before deleting; expect an error with the details still visible and actions enabled for retry.
+
+History filtering checks:
+
+- Search for part of a training name and apply; matching should be case-insensitive.
+- Choose Strength; weighted and bodyweight sessions should both appear. Choose Cardio to see only cardio sessions.
+- Apply a date range and verify both boundary dates are included. One-sided ranges should also work.
+- Combine search, category, and dates; expect only sessions matching all filters.
+- Try a start date after the end date; expect validation without replacing the current results.
+- Open details and return; applied filter values should remain.
+- Clear filters to restore all history. A search with no matches should show the filtered-empty message.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

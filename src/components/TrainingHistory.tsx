@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { logout } from '../api/auth'
-import { getTrainingSessions, type TrainingSession } from '../api/trainingSessions'
+import { getTrainingSessions, type TrainingSession, type TrainingSessionFilters } from '../api/trainingSessions'
 import SessionDetails from './SessionDetails'
 import TrainingLibrary from './TrainingLibrary'
 import CreateSessionForm from './CreateSessionForm'
+import HistoryFilters from './HistoryFilters'
 
 type TrainingHistoryProps = {
   onSignedOut: () => void
@@ -19,11 +20,13 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
   const [showLibrary, setShowLibrary] = useState(false)
   const [showCreateSession, setShowCreateSession] = useState(false)
+  const [filters, setFilters] = useState<TrainingSessionFilters>({ search: '', category: '', from: '', to: '' })
+  const hasFilters = Boolean(filters.search || filters.category || filters.from || filters.to)
 
   useEffect(() => {
     let active = true
 
-    getTrainingSessions()
+    getTrainingSessions(filters.from, filters.to, filters.search, filters.category)
       .then((data) => {
         if (!active) return
         if (data === null) {
@@ -42,7 +45,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
     return () => {
       active = false
     }
-  }, [onSignedOut, retryCount])
+  }, [onSignedOut, retryCount, filters])
 
   function retry() {
     setError('')
@@ -120,6 +123,16 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
         <button type="button" onClick={() => setShowLibrary(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Manage training types</button>
       </div>
 
+      <HistoryFilters
+        initialFilters={filters}
+        isLoading={isLoading}
+        onApply={(updated) => {
+          setError('')
+          setIsLoading(true)
+          setFilters(updated)
+        }}
+      />
+
       {isLoading ? (
         <p role="status" className="text-slate-600">Loading training history…</p>
       ) : error ? (
@@ -131,7 +144,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
         </div>
       ) : sessions.length === 0 ? (
         <p className="rounded-xl border border-slate-200 bg-white p-6 text-slate-600">
-          No training sessions yet.
+          {hasFilters ? 'No sessions match these filters.' : 'No training sessions yet.'}
         </p>
       ) : (
         <ul className="space-y-3">
