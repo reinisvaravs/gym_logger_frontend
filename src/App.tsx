@@ -4,8 +4,6 @@ import { getCurrentUser } from './api/auth'
 import LoginForm from './components/LoginForm'
 import TrainingHistory from './components/TrainingHistory'
 import RegisterForm from './components/RegisterForm'
-import ThemeToggle from './components/ThemeToggle'
-import UnitsSelect from './components/UnitsSelect'
 import AppNavigation from './components/AppNavigation'
 import TrainingCalendar from './components/TrainingCalendar'
 import TrainingLibrary from './components/TrainingLibrary'
@@ -54,7 +52,6 @@ function App() {
         <header className="mb-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h1 className="text-3xl font-bold"><Link to={userId ? '/history' : '/login'}>Gym Logger</Link></h1>
-            <div className="flex flex-wrap items-center gap-2"><UnitsSelect /><ThemeToggle /></div>
           </div>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Track your strength training and cardio sessions.</p>
         </header>

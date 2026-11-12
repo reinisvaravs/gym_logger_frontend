@@ -58,7 +58,7 @@ Vite handles page refreshes during development. When deploying, configure fronte
 
 ## Measurement units
 
-Choose Metric or Imperial in the header. Metric is the default; the choice is stored as `gym-units` in localStorage for this browser, not per account.
+Choose Metric or Imperial under Settings → Preferences. Metric is the default; the choice is stored as `gym-units` in localStorage for this browser, not per account.
 
 Imperial uses pounds, miles, and feet. Reps, seconds, bpm, watts, and cadence remain unchanged. The frontend converts measurements for display and converts input back to kg/km/metres before sending it to the API. Stored values and API field names remain metric.
 
@@ -175,19 +175,19 @@ Account deletion checks (use a disposable account):
 
 Theme checks:
 
-- Switch Light mode/Dark mode from the page header on login and while signed in.
+- Change Theme under Settings → Preferences, then check other pages and the logged-out screen.
 - Refresh and revisit the app; the selected theme should persist through login and logout.
 - Check inputs, dropdowns, calendar days, selected states, error messages, and account deletion in both themes.
 - Remove `gym-theme` from localStorage and refresh; the initial theme should match the system setting.
 
 Unit preference checks:
 
-- Switch units in session details: 20 kg should show about 44.092 lb; distances and elevation should switch to mi/ft.
+- Change units in Settings → Preferences, then open session details: 20 kg should show about 44.092 lb; distances and elevation should switch to mi/ft.
 - Refresh; the preference should persist. Login/logout should not change it.
 - Log/add/edit weighted and cardio sets in Imperial, then switch to Metric to check the saved conversions.
 - Save an unchanged converted set; the metric values should not drift.
 - Clear an optional added weight/elevation field; it should stay absent after saving.
-- Change the preference while a form is open; its labels and numbers should retain the original units, with a notice explaining how to switch.
+- Reopen measurement forms after changing the preference in Settings; labels and inputs should use the new units.
 
 Navigation checks:
 
