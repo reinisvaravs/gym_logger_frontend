@@ -64,7 +64,10 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
   }
 
   if (showLibrary) {
-    return <TrainingLibrary backLabel="Back to calendar" onSignedOut={onSignedOut} onBack={() => setShowLibrary(false)} />
+    return <TrainingLibrary backLabel="Back to calendar" onSignedOut={onSignedOut} onBack={() => {
+      setShowLibrary(false)
+      refresh()
+    }} />
   }
 
   if (showCreateSession) {
