@@ -94,54 +94,54 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initia
 
   return (
     <section aria-labelledby="create-session-heading">
-      <button type="button" onClick={onBack} disabled={isSaving} className="mb-6 cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 disabled:opacity-60">{backLabel}</button>
+      <button type="button" onClick={onBack} disabled={isSaving} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">{backLabel}</button>
       <h2 id="create-session-heading" className="text-2xl font-semibold">Log a session</h2>
 
       {isLoading ? (
-        <p role="status" className="mt-6 text-slate-600">Loading training types…</p>
+        <p role="status" className="mt-6 text-slate-600 dark:text-slate-300">Loading training types…</p>
       ) : loadError ? (
         <div className="mt-6">
-          <p role="alert" className="text-sm text-red-700">{loadError}</p>
-          <button type="button" onClick={() => { setLoadError(''); setIsLoading(true); setRetryCount(retryCount + 1) }} className="mt-3 cursor-pointer text-emerald-700 underline">Try again</button>
+          <p role="alert" className="text-sm text-red-700 dark:text-red-400">{loadError}</p>
+          <button type="button" onClick={() => { setLoadError(''); setIsLoading(true); setRetryCount(retryCount + 1) }} className="mt-3 cursor-pointer text-emerald-700 dark:text-emerald-400 underline">Try again</button>
         </div>
       ) : types.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-slate-600">Add or restore a training type before logging a session.</p>
-          <button type="button" onClick={onManageTypes} className="mt-3 cursor-pointer font-medium text-emerald-700 underline">Open training library</button>
+        <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
+          <p className="text-slate-600 dark:text-slate-300">Add or restore a training type before logging a session.</p>
+          <button type="button" onClick={onManageTypes} className="mt-3 cursor-pointer font-medium text-emerald-700 dark:text-emerald-400 underline">Open training library</button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="mt-6" aria-busy={isSaving}>
           <fieldset disabled={isSaving} className="space-y-6">
-            <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+            <div className="space-y-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
               <div>
                 <label htmlFor="session-type" className="block text-sm font-medium">Exercise or activity</label>
-                <select id="session-type" value={typeId} onChange={(event) => { setTypeId(event.target.value); setSetIds([0]); setNextSetId(1); setError('') }} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:outline-emerald-700">
+                <select id="session-type" value={typeId} onChange={(event) => { setTypeId(event.target.value); setSetIds([0]); setNextSetId(1); setError('') }} className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400">
                   {types.map((type) => <option key={type.id} value={type.id}>{type.training_name}</option>)}
                 </select>
-                <p className="mt-1 text-xs text-slate-500">Changing the exercise clears the entered sets.</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Changing the exercise clears the entered sets.</p>
               </div>
               <div>
                 <label htmlFor="session-date" className="block text-sm font-medium">Date</label>
-                <input id="session-date" name="performedOn" type="date" required defaultValue={initialDate || today} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-emerald-700" />
+                <input id="session-date" name="performedOn" type="date" required defaultValue={initialDate || today} className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400" />
               </div>
               <div>
                 <label htmlFor="session-notes" className="block text-sm font-medium">Notes (optional)</label>
-                <textarea id="session-notes" name="notes" rows={3} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-emerald-700" />
+                <textarea id="session-notes" name="notes" rows={3} className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400" />
               </div>
             </div>
 
             {selectedType && setIds.map((id, index) => (
-              <div key={`${selectedType.id}-${id}`} className="rounded-xl border border-slate-200 bg-white p-5">
+              <div key={`${selectedType.id}-${id}`} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <h3 className="font-semibold">Set {index + 1}</h3>
-                  {setIds.length > 1 && <button type="button" onClick={() => setSetIds(setIds.filter((setId) => setId !== id))} className="cursor-pointer text-sm text-red-700 underline">Remove set</button>}
+                  {setIds.length > 1 && <button type="button" onClick={() => setSetIds(setIds.filter((setId) => setId !== id))} className="cursor-pointer text-sm text-red-700 dark:text-red-400 underline">Remove set</button>}
                 </div>
                 <SessionSetFields setId={id} category={selectedType.category} />
               </div>
             ))}
 
-            <button type="button" onClick={() => { setSetIds([...setIds, nextSetId]); setNextSetId(nextSetId + 1) }} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Add set</button>
-            {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+            <button type="button" onClick={() => { setSetIds([...setIds, nextSetId]); setNextSetId(nextSetId + 1) }} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Add set</button>
+            {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>}
             <button type="submit" className="block w-full cursor-pointer rounded-lg bg-emerald-700 px-4 py-3 font-medium text-white hover:bg-emerald-800 disabled:opacity-60">{isSaving ? 'Saving session…' : 'Save session'}</button>
           </fieldset>
         </form>

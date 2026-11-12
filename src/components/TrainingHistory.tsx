@@ -122,19 +122,19 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
           type="button"
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-wait disabled:opacity-60"
+          className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 disabled:cursor-wait disabled:opacity-60"
         >
           {isLoggingOut ? 'Logging out…' : 'Log out'}
         </button>
       </div>
 
-      {logoutError && <p role="alert" className="mb-4 text-sm text-red-700">{logoutError}</p>}
+      {logoutError && <p role="alert" className="mb-4 text-sm text-red-700 dark:text-red-400">{logoutError}</p>}
 
       <div className="mb-6 flex flex-wrap gap-3">
         <button type="button" onClick={() => setShowCreateSession(true)} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</button>
-        <button type="button" onClick={() => setShowCalendar(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Calendar</button>
-        <button type="button" onClick={() => setShowLibrary(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Manage training types</button>
-        <button type="button" onClick={() => setShowSettings(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Account settings</button>
+        <button type="button" onClick={() => setShowCalendar(true)} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Calendar</button>
+        <button type="button" onClick={() => setShowLibrary(true)} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Manage training types</button>
+        <button type="button" onClick={() => setShowSettings(true)} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Account settings</button>
       </div>
 
       <HistoryFilters
@@ -148,41 +148,41 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
       />
 
       {isLoading ? (
-        <p role="status" className="text-slate-600">Loading training history…</p>
+        <p role="status" className="text-slate-600 dark:text-slate-300">Loading training history…</p>
       ) : error ? (
-        <div className="rounded-xl border border-red-200 bg-white p-6">
-          <p role="alert" className="text-sm text-red-700">{error}</p>
-          <button type="button" onClick={retry} className="mt-3 cursor-pointer font-medium text-emerald-700 underline">
+        <div className="rounded-xl border border-red-200 dark:border-red-900 bg-white dark:bg-slate-900 p-6">
+          <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>
+          <button type="button" onClick={retry} className="mt-3 cursor-pointer font-medium text-emerald-700 dark:text-emerald-400 underline">
             Try again
           </button>
         </div>
       ) : sessions.length === 0 ? (
-        <p className="rounded-xl border border-slate-200 bg-white p-6 text-slate-600">
+        <p className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 text-slate-600 dark:text-slate-300">
           {hasFilters ? 'No sessions match these filters.' : 'No training sessions yet.'}
         </p>
       ) : (
         <ul className="space-y-3">
           {sessions.map((session) => (
             <li key={session.id}>
-              <article className="rounded-xl border border-slate-200 bg-white p-5">
+              <article className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <h3 className="min-w-0 break-words font-semibold">
                     <button
                       type="button"
                       onClick={() => setSelectedSessionId(session.id)}
-                      className="cursor-pointer text-left text-emerald-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+                      className="cursor-pointer text-left text-emerald-700 dark:text-emerald-400 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400"
                     >
                       {session.training_name}
                     </button>
                   </h3>
-                  <span className="rounded bg-slate-100 px-2 py-1 text-xs text-slate-600">
+                  <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-1 text-xs text-slate-600 dark:text-slate-300">
                     {session.category === 'cardio' ? 'Cardio' : 'Strength'}
                   </span>
                 </div>
-                <time dateTime={session.performed_on} className="mt-1 block text-sm text-slate-500">
+                <time dateTime={session.performed_on} className="mt-1 block text-sm text-slate-500 dark:text-slate-400">
                   {session.performed_on}
                 </time>
-                {session.notes && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-slate-600">{session.notes}</p>}
+                {session.notes && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-slate-600 dark:text-slate-300">{session.notes}</p>}
               </article>
             </li>
           ))}

@@ -3,6 +3,7 @@ import { getCurrentUser } from './api/auth'
 import LoginForm from './components/LoginForm'
 import TrainingHistory from './components/TrainingHistory'
 import RegisterForm from './components/RegisterForm'
+import ThemeToggle from './components/ThemeToggle'
 
 function App() {
   const [userId, setUserId] = useState<string | null>(null)
@@ -33,15 +34,18 @@ function App() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-12 text-slate-900 dark:text-slate-100">
       <div className={userId ? 'mx-auto max-w-3xl' : 'mx-auto max-w-md'}>
         <header className="mb-8">
-          <h1 className="text-3xl font-bold">Gym Logger</h1>
-          <p className="mt-2 text-slate-600">Track your strength training and cardio sessions.</p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-3xl font-bold">Gym Logger</h1>
+            <ThemeToggle />
+          </div>
+          <p className="mt-2 text-slate-600 dark:text-slate-300">Track your strength training and cardio sessions.</p>
         </header>
 
         {isCheckingSession ? (
-          <p role="status" className="text-slate-600">Checking your session…</p>
+          <p role="status" className="text-slate-600 dark:text-slate-300">Checking your session…</p>
         ) : userId ? (
           <TrainingHistory onSignedOut={(message, success = false) => {
             setUserId(null)
@@ -53,7 +57,7 @@ function App() {
           }} />
         ) : (
           <>
-            {sessionError && <p role={isSessionNoticeSuccess ? 'status' : 'alert'} className={`mb-4 text-sm ${isSessionNoticeSuccess ? 'text-emerald-800' : 'text-red-700'}`}>{sessionError}</p>}
+            {sessionError && <p role={isSessionNoticeSuccess ? 'status' : 'alert'} className={`mb-4 text-sm ${isSessionNoticeSuccess ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-700 dark:text-red-400'}`}>{sessionError}</p>}
             {authView === 'register' ? (
               <RegisterForm
                 onLogin={() => setAuthView('login')}
@@ -66,7 +70,7 @@ function App() {
               />
             ) : (
               <>
-                {registrationMessage && <p role="status" className="mb-4 text-sm text-emerald-800">{registrationMessage}</p>}
+                {registrationMessage && <p role="status" className="mb-4 text-sm text-emerald-800 dark:text-emerald-300">{registrationMessage}</p>}
                 <LoginForm
                   initialEmail={registeredEmail}
                   onLogin={setUserId}

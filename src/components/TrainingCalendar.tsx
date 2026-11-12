@@ -94,26 +94,26 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
 
   return (
     <section aria-labelledby="calendar-heading">
-      <button type="button" onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Back to history</button>
+      <button type="button" onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Back to history</button>
       <h2 id="calendar-heading" className="text-2xl font-semibold">Training calendar</h2>
 
       <div className="my-6 flex items-center justify-between gap-3">
-        <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month" className="cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-100">Previous</button>
+        <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month" className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Previous</button>
         <h3 aria-live="polite" className="text-center font-semibold">{month.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</h3>
-        <button type="button" onClick={() => changeMonth(1)} aria-label="Next month" className="cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-100">Next</button>
+        <button type="button" onClick={() => changeMonth(1)} aria-label="Next month" className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Next</button>
       </div>
 
       {isLoading ? (
-        <p role="status" className="text-slate-600">Loading calendar…</p>
+        <p role="status" className="text-slate-600 dark:text-slate-300">Loading calendar…</p>
       ) : error ? (
         <div>
-          <p role="alert" className="text-sm text-red-700">{error}</p>
-          <button type="button" onClick={refresh} className="mt-3 cursor-pointer text-emerald-700 underline">Try again</button>
+          <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>
+          <button type="button" onClick={refresh} className="mt-3 cursor-pointer text-emerald-700 dark:text-emerald-400 underline">Try again</button>
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-5">
-            <div className="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 sm:text-sm">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 sm:p-5">
+            <div className="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 dark:text-slate-400 sm:text-sm">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => <div key={day} className="py-2">{day}</div>)}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -130,16 +130,16 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
                     aria-pressed={date === selectedDate}
                     aria-current={date === today ? 'date' : undefined}
                     aria-label={`${date}, ${count} ${count === 1 ? 'session' : 'sessions'}`}
-                    className={`flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-lg border text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${date === selectedDate ? 'border-emerald-700 bg-emerald-700 text-white' : date === today ? 'border-emerald-600 bg-emerald-50 text-slate-900 hover:bg-emerald-100' : 'border-transparent text-slate-900 hover:bg-slate-100'}`}
+                    className={`flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-lg border text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 ${date === selectedDate ? 'border-emerald-700 bg-emerald-700 text-white' : date === today ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900' : 'border-transparent text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                   >
                     <span>{day}</span>
-                    {count > 0 && <span className={`mt-1 rounded-full px-1.5 text-xs ${date === selectedDate ? 'bg-white/20' : 'bg-emerald-100 text-emerald-800'}`}>{count}</span>}
+                    {count > 0 && <span className={`mt-1 rounded-full px-1.5 text-xs ${date === selectedDate ? 'bg-white/20' : 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300'}`}>{count}</span>}
                   </button>
                 )
               })}
             </div>
           </div>
-          <p className="mt-2 text-xs text-slate-500">Numbers below dates show the number of sessions.</p>
+          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Numbers below dates show the number of sessions.</p>
 
           {selectedDate ? (
             <div className="mt-6">
@@ -148,21 +148,21 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
                 <button type="button" onClick={() => setShowCreateSession(true)} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</button>
               </div>
               {selectedSessions.length === 0 ? (
-                <p className="text-slate-600">No sessions on this date.</p>
+                <p className="text-slate-600 dark:text-slate-300">No sessions on this date.</p>
               ) : (
                 <ul className="space-y-3">
                   {selectedSessions.map((session) => (
                     <li key={session.id}>
-                      <button type="button" onClick={() => setSelectedSessionId(session.id)} className="w-full cursor-pointer rounded-xl border border-slate-200 bg-white p-4 text-left hover:border-emerald-600 focus-visible:outline-emerald-700">
-                        <span className="block break-words font-medium text-emerald-700">{session.training_name}</span>
-                        <span className="mt-1 block text-sm text-slate-500">{session.category === 'cardio' ? 'Cardio' : 'Strength'}</span>
+                      <button type="button" onClick={() => setSelectedSessionId(session.id)} className="w-full cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-left hover:border-emerald-600 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400">
+                        <span className="block break-words font-medium text-emerald-700 dark:text-emerald-400">{session.training_name}</span>
+                        <span className="mt-1 block text-sm text-slate-500 dark:text-slate-400">{session.category === 'cardio' ? 'Cardio' : 'Strength'}</span>
                       </button>
                     </li>
                   ))}
                 </ul>
               )}
             </div>
-          ) : <p className="mt-6 text-slate-600">Select a date to view or add sessions.</p>}
+          ) : <p className="mt-6 text-slate-600 dark:text-slate-300">Select a date to view or add sessions.</p>}
         </>
       )}
     </section>

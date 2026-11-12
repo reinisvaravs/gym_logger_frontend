@@ -35,9 +35,9 @@ function RegisterForm({ onRegistered, onLogin }: RegisterFormProps) {
   }
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="register-heading">
+    <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm sm:p-8" aria-labelledby="register-heading">
       <h2 id="register-heading" className="text-2xl font-semibold">Create an account</h2>
-      <p className="mt-2 text-sm text-slate-600">Start keeping track of your training.</p>
+      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Start keeping track of your training.</p>
 
       <form onSubmit={handleSubmit} className="mt-6" aria-busy={isSubmitting}>
         <fieldset disabled={isSubmitting} className="space-y-5">
@@ -53,7 +53,7 @@ function RegisterForm({ onRegistered, onLogin }: RegisterFormProps) {
               maxLength={100}
               value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
-              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100"
+              className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100 dark:disabled:bg-slate-800"
             />
           </div>
 
@@ -67,7 +67,7 @@ function RegisterForm({ onRegistered, onLogin }: RegisterFormProps) {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100"
+              className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100 dark:disabled:bg-slate-800"
             />
           </div>
 
@@ -83,20 +83,20 @@ function RegisterForm({ onRegistered, onLogin }: RegisterFormProps) {
               maxLength={255}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100"
+              className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100 dark:disabled:bg-slate-800"
             />
           </div>
 
-          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+          {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>}
 
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-lg bg-emerald-700 px-4 py-2.5 font-medium text-white hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-wait disabled:opacity-60"
+            className="w-full cursor-pointer rounded-lg bg-emerald-700 px-4 py-2.5 font-medium text-white hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 disabled:cursor-wait disabled:opacity-60"
           >
             {isSubmitting ? 'Creating account…' : 'Create account'}
           </button>
 
-          <button type="button" onClick={onLogin} className="w-full cursor-pointer text-sm font-medium text-emerald-700 underline disabled:cursor-wait disabled:opacity-60">
+          <button type="button" onClick={onLogin} className="w-full cursor-pointer text-sm font-medium text-emerald-700 dark:text-emerald-400 underline disabled:cursor-wait disabled:opacity-60">
             Already have an account? Log in
           </button>
         </fieldset>

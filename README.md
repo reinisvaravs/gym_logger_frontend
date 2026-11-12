@@ -19,6 +19,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Login with email and password, with switching between both forms.
 - Account settings with current-password verification and new-password confirmation.
 - Account deletion with password verification, permanent-deletion confirmation, and return to login.
+- Light/dark mode across the app, saved in the browser with a system-preference default.
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
@@ -140,6 +141,13 @@ Account deletion checks (use a disposable account):
 - Confirm with the correct password; expect login with a deletion message and no private training UI.
 - Refresh and try logging in with the deleted account; it should fail.
 - Stop the backend before submitting; expect an error and an enabled form for retry.
+
+Theme checks:
+
+- Switch Light mode/Dark mode from the page header on login and while signed in.
+- Refresh and revisit the app; the selected theme should persist through login and logout.
+- Check inputs, dropdowns, calendar days, selected states, error messages, and account deletion in both themes.
+- Remove `gym-theme` from localStorage and refresh; the initial theme should match the system setting.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

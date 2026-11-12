@@ -8,7 +8,7 @@ type SessionSetFieldsProps = {
 }
 
 function SessionSetFields({ setId, category, initialSet }: SessionSetFieldsProps) {
-  const inputClass = 'mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-emerald-700'
+  const inputClass = 'mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400'
 
   return (
     <>
@@ -42,7 +42,7 @@ function SessionSetFields({ setId, category, initialSet }: SessionSetFieldsProps
 
       {category === 'cardio' && (
         <details className="mt-4" open={initialSet !== undefined}>
-          <summary className="cursor-pointer text-sm font-medium text-slate-600">Optional measurements</summary>
+          <summary className="cursor-pointer text-sm font-medium text-slate-600 dark:text-slate-300">Optional measurements</summary>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor={`heart-rate-${setId}`} className="block text-sm font-medium">Avg. heart rate (bpm)</label>
