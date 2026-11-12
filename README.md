@@ -21,6 +21,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
 - History search, strength/cardio filtering, and inclusive date-range filters.
+- Monthly calendar with session counts, selected-day sessions, and logging on a chosen date.
 - Session details with ordered strength/cardio sets and measurement units.
 - Editing session dates and notes from the detail screen.
 - Deleting sessions and their sets with confirmation, returning to refreshed history.
@@ -110,6 +111,16 @@ History filtering checks:
 - Try a start date after the end date; expect validation without replacing the current results.
 - Open details and return; applied filter values should remain.
 - Clear filters to restore all history. A search with no matches should show the filtered-empty message.
+
+Calendar checks:
+
+- Open Calendar and move between months, including December/January and February in a leap year.
+- Verify training dates have counts and selecting a day shows its sessions in order.
+- Select a date with no sessions, choose Log session, and verify the date is prefilled.
+- Save, edit, or delete a session, then return to the calendar; counts and the selected day's list should refresh.
+- Open details and return; the displayed month and selected date should remain.
+- With no active training types, follow the library link from the log form and return to the calendar.
+- Stop the backend before changing months; expect an error with retry available.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

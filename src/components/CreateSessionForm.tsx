@@ -4,13 +4,15 @@ import { createTrainingSession, getTrainingSessions, type TrainingSetInput } fro
 import SessionSetFields from './SessionSetFields'
 
 type CreateSessionFormProps = {
+  initialDate?: string
+  backLabel?: string
   onBack: () => void
   onSaved: (sessionId: string) => void
   onManageTypes: () => void
   onSignedOut: () => void
 }
 
-function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut }: CreateSessionFormProps) {
+function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initialDate, backLabel = 'Back to history' }: CreateSessionFormProps) {
   const [types, setTypes] = useState<TrainingType[]>([])
   const [typeId, setTypeId] = useState('')
   const [setIds, setSetIds] = useState([0])
@@ -92,7 +94,7 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut }: Crea
 
   return (
     <section aria-labelledby="create-session-heading">
-      <button type="button" onClick={onBack} disabled={isSaving} className="mb-6 cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 disabled:opacity-60">Back to history</button>
+      <button type="button" onClick={onBack} disabled={isSaving} className="mb-6 cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 disabled:opacity-60">{backLabel}</button>
       <h2 id="create-session-heading" className="text-2xl font-semibold">Log a session</h2>
 
       {isLoading ? (
@@ -120,7 +122,7 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut }: Crea
               </div>
               <div>
                 <label htmlFor="session-date" className="block text-sm font-medium">Date</label>
-                <input id="session-date" name="performedOn" type="date" required defaultValue={today} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-emerald-700" />
+                <input id="session-date" name="performedOn" type="date" required defaultValue={initialDate || today} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-emerald-700" />
               </div>
               <div>
                 <label htmlFor="session-notes" className="block text-sm font-medium">Notes (optional)</label>

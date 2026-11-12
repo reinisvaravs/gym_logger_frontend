@@ -5,6 +5,7 @@ import SessionDetails from './SessionDetails'
 import TrainingLibrary from './TrainingLibrary'
 import CreateSessionForm from './CreateSessionForm'
 import HistoryFilters from './HistoryFilters'
+import TrainingCalendar from './TrainingCalendar'
 
 type TrainingHistoryProps = {
   onSignedOut: () => void
@@ -20,6 +21,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
   const [showLibrary, setShowLibrary] = useState(false)
   const [showCreateSession, setShowCreateSession] = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
   const [filters, setFilters] = useState<TrainingSessionFilters>({ search: '', category: '', from: '', to: '' })
   const hasFilters = Boolean(filters.search || filters.category || filters.from || filters.to)
 
@@ -66,6 +68,10 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
     } finally {
       setIsLoggingOut(false)
     }
+  }
+
+  if (showCalendar) {
+    return <TrainingCalendar onSignedOut={onSignedOut} onBack={() => { setShowCalendar(false); retry() }} />
   }
 
   if (showCreateSession) {
@@ -120,6 +126,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
 
       <div className="mb-6 flex flex-wrap gap-3">
         <button type="button" onClick={() => setShowCreateSession(true)} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</button>
+        <button type="button" onClick={() => setShowCalendar(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Calendar</button>
         <button type="button" onClick={() => setShowLibrary(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Manage training types</button>
       </div>
 

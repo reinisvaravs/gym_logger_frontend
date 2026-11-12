@@ -3,11 +3,12 @@ import { createTrainingType, getTrainingTypes, type TrainingCategory, type Train
 import TrainingTypeItem from './TrainingTypeItem'
 
 type TrainingLibraryProps = {
+  backLabel?: string
   onBack: () => void
   onSignedOut: () => void
 }
 
-function TrainingLibrary({ onBack, onSignedOut }: TrainingLibraryProps) {
+function TrainingLibrary({ onBack, onSignedOut, backLabel = 'Back to history' }: TrainingLibraryProps) {
   const [types, setTypes] = useState<TrainingType[]>([])
   const [name, setName] = useState('')
   const [category, setCategory] = useState<TrainingCategory>('weighted_reps')
@@ -58,7 +59,7 @@ function TrainingLibrary({ onBack, onSignedOut }: TrainingLibraryProps) {
   return (
     <section aria-labelledby="library-heading">
       <button type="button" onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">
-        Back to history
+        {backLabel}
       </button>
       <h2 id="library-heading" className="text-2xl font-semibold">Training library</h2>
       <p className="mt-2 text-sm text-slate-600">Your exercises and activities. Archive types you no longer use to keep their history.</p>

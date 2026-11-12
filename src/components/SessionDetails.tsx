@@ -5,12 +5,13 @@ import EditSetForm from './EditSetForm'
 import AddSetForm from './AddSetForm'
 
 type SessionDetailsProps = {
+  backLabel?: string
   sessionId: string
   onBack: () => void
   onSignedOut: () => void
 }
 
-function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps) {
+function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to history' }: SessionDetailsProps) {
   const [session, setSession] = useState<TrainingSessionDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -146,7 +147,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
         disabled={isBusy}
         className="mb-6 cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
       >
-        Back to history
+        {backLabel}
       </button>
 
       {isLoading ? (
