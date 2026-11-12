@@ -114,6 +114,34 @@ type TrainingSessionInput = {
   sets: TrainingSetInput[]
 }
 
+export async function addTrainingSet(sessionId: string, input: TrainingSetInput): Promise<TrainingSet | null> {
+  const response = await fetch(`${apiUrl}/training-sessions/${sessionId}/sets`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (response.status === 401) return null
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not add this set.')
+  }
+  return response.json()
+}
+
+export async function deleteTrainingSet(sessionId: string, setId: string) {
+  const response = await fetch(`${apiUrl}/training-sessions/${sessionId}/sets/${setId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+  if (response.status === 401) return false
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not remove this set.')
+  }
+  return true
+}
+
 export async function updateTrainingSet(
   sessionId: string,
   setId: string,
