@@ -9,7 +9,7 @@ import TrainingCalendar from './TrainingCalendar'
 import AccountSettings from './AccountSettings'
 
 type TrainingHistoryProps = {
-  onSignedOut: (message?: string) => void
+  onSignedOut: (message?: string, success?: boolean) => void
 }
 
 function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {

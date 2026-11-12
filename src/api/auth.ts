@@ -50,6 +50,28 @@ export async function changePassword(currentPassword: string, newPassword: strin
   throw new Error(data?.message || 'Could not change your password. Please try again.')
 }
 
+export async function deleteAccount(currentPassword: string) {
+  const response = await fetch(`${apiUrl}/users/account`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ currentPassword }),
+  })
+
+  if (response.status === 204) {
+    return { isDeleted: true, message: 'Your account has been deleted.' }
+  }
+
+  const data = await response.json().catch(() => null)
+  if (response.status === 401 && (await getCurrentUser()) === null) {
+    return { isDeleted: false, message: 'Your session expired. Please log in again.' }
+  }
+  if (data?.message === 'Account deleted, but session cleanup failed.') {
+    return { isDeleted: true, message: 'Your account has been deleted. Session cleanup failed; please close this session.' }
+  }
+  throw new Error(data?.message || 'Could not delete your account. Please try again.')
+}
+
 export async function getCurrentUser(): Promise<string | null> {
   const response = await fetch(`${apiUrl}/me`, {
     credentials: 'include',

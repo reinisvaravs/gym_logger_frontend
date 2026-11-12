@@ -8,6 +8,7 @@ function App() {
   const [userId, setUserId] = useState<string | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [sessionError, setSessionError] = useState('')
+  const [isSessionNoticeSuccess, setIsSessionNoticeSuccess] = useState(false)
   const [authView, setAuthView] = useState<'login' | 'register'>('login')
   const [registeredEmail, setRegisteredEmail] = useState('')
   const [registrationMessage, setRegistrationMessage] = useState('')
@@ -42,16 +43,17 @@ function App() {
         {isCheckingSession ? (
           <p role="status" className="text-slate-600">Checking your session…</p>
         ) : userId ? (
-          <TrainingHistory onSignedOut={(message) => {
+          <TrainingHistory onSignedOut={(message, success = false) => {
             setUserId(null)
             setSessionError(message || '')
+            setIsSessionNoticeSuccess(success)
             setAuthView('login')
             setRegistrationMessage('')
             setRegisteredEmail('')
           }} />
         ) : (
           <>
-            {sessionError && <p role="alert" className="mb-4 text-sm text-red-700">{sessionError}</p>}
+            {sessionError && <p role={isSessionNoticeSuccess ? 'status' : 'alert'} className={`mb-4 text-sm ${isSessionNoticeSuccess ? 'text-emerald-800' : 'text-red-700'}`}>{sessionError}</p>}
             {authView === 'register' ? (
               <RegisterForm
                 onLogin={() => setAuthView('login')}

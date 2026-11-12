@@ -18,6 +18,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Registration with name, email, and password.
 - Login with email and password, with switching between both forms.
 - Account settings with current-password verification and new-password confirmation.
+- Account deletion with password verification, permanent-deletion confirmation, and return to login.
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
@@ -131,6 +132,14 @@ Password change checks:
 - Refresh after a successful change; this browser should stay logged in. Other previously saved sessions should be invalid.
 - Log out; the old password should fail and the new password should work.
 - Stop the backend before submitting; expect an error with a retry available.
+
+Account deletion checks (use a disposable account):
+
+- Enter the current password and choose Delete my account; cancel the confirmation and verify the account remains.
+- Try an incorrect password; expect an error while staying signed in.
+- Confirm with the correct password; expect login with a deletion message and no private training UI.
+- Refresh and try logging in with the deleted account; it should fail.
+- Stop the backend before submitting; expect an error and an enabled form for retry.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 
