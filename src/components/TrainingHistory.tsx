@@ -6,9 +6,10 @@ import TrainingLibrary from './TrainingLibrary'
 import CreateSessionForm from './CreateSessionForm'
 import HistoryFilters from './HistoryFilters'
 import TrainingCalendar from './TrainingCalendar'
+import AccountSettings from './AccountSettings'
 
 type TrainingHistoryProps = {
-  onSignedOut: () => void
+  onSignedOut: (message?: string) => void
 }
 
 function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
@@ -22,6 +23,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
   const [showLibrary, setShowLibrary] = useState(false)
   const [showCreateSession, setShowCreateSession] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const [filters, setFilters] = useState<TrainingSessionFilters>({ search: '', category: '', from: '', to: '' })
   const hasFilters = Boolean(filters.search || filters.category || filters.from || filters.to)
 
@@ -68,6 +70,10 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
     } finally {
       setIsLoggingOut(false)
     }
+  }
+
+  if (showSettings) {
+    return <AccountSettings onSignedOut={onSignedOut} onBack={() => setShowSettings(false)} />
   }
 
   if (showCalendar) {
@@ -128,6 +134,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
         <button type="button" onClick={() => setShowCreateSession(true)} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</button>
         <button type="button" onClick={() => setShowCalendar(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Calendar</button>
         <button type="button" onClick={() => setShowLibrary(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Manage training types</button>
+        <button type="button" onClick={() => setShowSettings(true)} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Account settings</button>
       </div>
 
       <HistoryFilters

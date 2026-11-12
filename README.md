@@ -17,6 +17,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 
 - Registration with name, email, and password.
 - Login with email and password, with switching between both forms.
+- Account settings with current-password verification and new-password confirmation.
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
@@ -121,6 +122,15 @@ Calendar checks:
 - Open details and return; the displayed month and selected date should remain.
 - With no active training types, follow the library link from the log form and return to the calendar.
 - Stop the backend before changing months; expect an error with retry available.
+
+Password change checks:
+
+- Open Account settings, enter the current password, and confirm a new one; expect a success message and cleared password fields.
+- Enter mismatched new passwords; expect a validation error without a request.
+- Enter an incorrect current password; expect an error while staying on the form.
+- Refresh after a successful change; this browser should stay logged in. Other previously saved sessions should be invalid.
+- Log out; the old password should fail and the new password should work.
+- Stop the backend before submitting; expect an error with a retry available.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

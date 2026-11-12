@@ -25,6 +25,31 @@ export async function logout() {
   }
 }
 
+export async function changePassword(currentPassword: string, newPassword: string) {
+  const response = await fetch(`${apiUrl}/users/change-password`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  })
+  const data = await response.json().catch(() => null)
+
+  if (response.ok) {
+    return { requiresLogin: false, message: 'Password changed successfully.' }
+  }
+
+  // A wrong password and an expired session both use 401; check the session.
+  if (response.status === 401 && (await getCurrentUser()) === null) {
+    return { requiresLogin: true, message: 'Your session expired. Please log in again.' }
+  }
+
+  if (data?.message === 'Password changed, but please log in again.') {
+    return { requiresLogin: true, message: 'Password changed, but please log in again.' }
+  }
+
+  throw new Error(data?.message || 'Could not change your password. Please try again.')
+}
+
 export async function getCurrentUser(): Promise<string | null> {
   const response = await fetch(`${apiUrl}/me`, {
     credentials: 'include',

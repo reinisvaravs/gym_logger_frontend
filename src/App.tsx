@@ -42,9 +42,9 @@ function App() {
         {isCheckingSession ? (
           <p role="status" className="text-slate-600">Checking your session…</p>
         ) : userId ? (
-          <TrainingHistory onSignedOut={() => {
+          <TrainingHistory onSignedOut={(message) => {
             setUserId(null)
-            setSessionError('')
+            setSessionError(message || '')
             setAuthView('login')
             setRegistrationMessage('')
             setRegisteredEmail('')
