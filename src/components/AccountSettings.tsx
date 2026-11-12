@@ -3,11 +3,12 @@ import { useState, type FormEvent } from 'react'
 import { changePassword, deleteAccount } from '../api/auth'
 
 type AccountSettingsProps = {
+  hideBack?: boolean
   onBack: () => void
   onSignedOut: (message?: string, success?: boolean) => void
 }
 
-function AccountSettings({ onBack, onSignedOut }: AccountSettingsProps) {
+function AccountSettings({ onBack, onSignedOut, hideBack = false }: AccountSettingsProps) {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -65,7 +66,7 @@ function AccountSettings({ onBack, onSignedOut }: AccountSettingsProps) {
 
   return (
     <section aria-labelledby="settings-heading">
-      <button type="button" disabled={isBusy} onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">Back to history</button>
+      {!hideBack && <button type="button" disabled={isBusy} onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">Back to history</button>}
       <h2 id="settings-heading" className="text-2xl font-semibold">Account settings</h2>
 
       <form onSubmit={handleSubmit} className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5" aria-busy={isSaving}>

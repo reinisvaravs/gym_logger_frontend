@@ -7,6 +7,7 @@ import { useUnits } from '../UnitsContext'
 import { readSetInput } from '../readSetInput'
 
 type CreateSessionFormProps = {
+  hideBack?: boolean
   initialDate?: string
   backLabel?: string
   onBack: () => void
@@ -15,7 +16,7 @@ type CreateSessionFormProps = {
   onSignedOut: () => void
 }
 
-function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initialDate, backLabel = 'Back to history' }: CreateSessionFormProps) {
+function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initialDate, backLabel = 'Back to history', hideBack = false }: CreateSessionFormProps) {
   const { unitSystem } = useUnits()
   const [formUnits] = useState(unitSystem)
   const [types, setTypes] = useState<TrainingType[]>([])
@@ -85,7 +86,7 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initia
 
   return (
     <section aria-labelledby="create-session-heading">
-      <button type="button" onClick={onBack} disabled={isSaving} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">{backLabel}</button>
+      {!hideBack && <button type="button" onClick={onBack} disabled={isSaving} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">{backLabel}</button>}
       <h2 id="create-session-heading" className="text-2xl font-semibold">Log a session</h2>
       {unitSystem !== formUnits && <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">This form keeps its original units. Go back and reopen it to use your new preference.</p>}
 

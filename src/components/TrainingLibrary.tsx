@@ -3,12 +3,13 @@ import { createTrainingType, getTrainingTypes, type TrainingCategory, type Train
 import TrainingTypeItem from './TrainingTypeItem'
 
 type TrainingLibraryProps = {
+  hideBack?: boolean
   backLabel?: string
   onBack: () => void
   onSignedOut: () => void
 }
 
-function TrainingLibrary({ onBack, onSignedOut, backLabel = 'Back to history' }: TrainingLibraryProps) {
+function TrainingLibrary({ onBack, onSignedOut, backLabel = 'Back to history', hideBack = false }: TrainingLibraryProps) {
   const [types, setTypes] = useState<TrainingType[]>([])
   const [name, setName] = useState('')
   const [category, setCategory] = useState<TrainingCategory>('weighted_reps')
@@ -58,9 +59,9 @@ function TrainingLibrary({ onBack, onSignedOut, backLabel = 'Back to history' }:
 
   return (
     <section aria-labelledby="library-heading">
-      <button type="button" onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
+      {!hideBack && <button type="button" onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
         {backLabel}
-      </button>
+      </button>}
       <h2 id="library-heading" className="text-2xl font-semibold">Training library</h2>
       <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Your exercises and activities. Archive types you no longer use to keep their history.</p>
 

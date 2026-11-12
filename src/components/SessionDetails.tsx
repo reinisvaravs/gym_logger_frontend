@@ -10,13 +10,14 @@ import { useUnits } from '../UnitsContext'
 import { displayWeight, displayDistance, displayElevation, displaySpeed } from '../units'
 
 type SessionDetailsProps = {
+  hideBack?: boolean
   backLabel?: string
   sessionId: string
   onBack: () => void
   onSignedOut: () => void
 }
 
-function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to history' }: SessionDetailsProps) {
+function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to history', hideBack = false }: SessionDetailsProps) {
   const { unitSystem } = useUnits()
   const [session, setSession] = useState<TrainingSessionDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -147,14 +148,14 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
 
   return (
     <section aria-label="Session details">
-      <button
+      {!hideBack && <button
         type="button"
         onClick={onBack}
         disabled={isBusy}
         className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400"
       >
         {backLabel}
-      </button>
+      </button>}
 
       {isLoading ? (
         <p role="status" className="text-slate-600 dark:text-slate-300">Loading session…</p>

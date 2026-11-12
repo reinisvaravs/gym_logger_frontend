@@ -1,6 +1,6 @@
 # Gym Logger Frontend
 
-React, TypeScript, Vite, and Tailwind frontend for Gym Logger.
+React, TypeScript, Vite, Tailwind, and React Router frontend for Gym Logger.
 
 ## Local setup
 
@@ -37,6 +37,24 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Logout and return to login when history requests report an expired session.
 
 Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+
+## Navigation
+
+The persistent navigation has four sections: History, Calendar, Training library, and Settings. Only the current section is highlighted. Log session is an action within history/calendar, separate from the navigation tabs. Logout is available across signed-in pages.
+
+| Page | URL |
+| --- | --- |
+| Login / registration | `/login`, `/register` |
+| History | `/history` |
+| Calendar | `/calendar` |
+| Training library | `/training-types` |
+| Account settings | `/settings` |
+| Log session | `/history/sessions/new` or `/calendar/sessions/new` |
+| Session details | `/history/sessions/:sessionId` or `/calendar/sessions/:sessionId` |
+
+Session pages show breadcrumbs to their parent section. History filters live in the query string; calendar URLs store `month=YYYY-MM` and `date=YYYY-MM-DD`. Browser Back/Forward, refresh, and copied URLs preserve that context. Login is required for private pages. Unsaved form drafts are not persisted when navigating away.
+
+Vite handles page refreshes during development. When deploying, configure frontend hosting to serve `index.html` for client-side routes; the backend API remains a separate service.
 
 ## Measurement units
 
@@ -170,6 +188,14 @@ Unit preference checks:
 - Save an unchanged converted set; the metric values should not drift.
 - Clear an optional added weight/elevation field; it should stay absent after saving.
 - Change the preference while a form is open; its labels and numbers should retain the original units, with a notice explaining how to switch.
+
+Navigation checks:
+
+- Visit each tab; exactly one should be active, including on session detail/logging pages.
+- Apply history filters, open a session, use the breadcrumb and browser Back/Forward, and refresh; verify filters remain.
+- Choose a calendar month/day, open a session or log one, and return; verify the date context remains.
+- Open a copied detail URL while signed in and refresh; the same session should load.
+- Logout from Calendar, Library, or Settings; private pages should redirect to login.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getTrainingSessions, type TrainingSession } from '../api/trainingSessions'
-import SessionDetails from './SessionDetails'
-import CreateSessionForm from './CreateSessionForm'
-import TrainingLibrary from './TrainingLibrary'
+import { Link, useSearchParams } from 'react-router-dom'
 import { formatDisplayDate } from '../formatDate'
 
 type TrainingCalendarProps = {
-  onBack: () => void
   onSignedOut: () => void
 }
 
@@ -14,24 +11,25 @@ function formatDate(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
 
-function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
-  const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()))
+function TrainingCalendar({ onSignedOut }: TrainingCalendarProps) {
+  const [params, setParams] = useSearchParams()
+  const today = formatDate(new Date())
+  const requestedMonth = params.get('month') || today.slice(0, 7)
+  const monthText = /^\d{4}-(0[1-9]|1[0-2])$/.test(requestedMonth) ? requestedMonth : today.slice(0, 7)
+  const month = new Date(`${monthText}-01T00:00:00`)
   const [sessions, setSessions] = useState<TrainingSession[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [retryCount, setRetryCount] = useState(0)
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
-  const [showCreateSession, setShowCreateSession] = useState(false)
-  const [showLibrary, setShowLibrary] = useState(false)
-
   const year = month.getFullYear()
   const monthIndex = month.getMonth()
   const from = formatDate(month)
   const to = formatDate(new Date(year, monthIndex + 1, 0))
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate()
   const emptyDays = (month.getDay() + 6) % 7
-  const today = formatDate(new Date())
+  const requestedDate = params.get('date') || (monthText === today.slice(0, 7) ? today : '')
+  const selectedDate = requestedDate >= from && requestedDate <= to ? requestedDate : ''
+  const dayParams = new URLSearchParams({ month: monthText, date: selectedDate })
   const selectedSessions = sessions.filter((session) => session.performed_on === selectedDate)
 
   useEffect(() => {
@@ -60,45 +58,11 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
   function changeMonth(direction: number) {
     setError('')
     setIsLoading(true)
-    setSelectedDate('')
-    setMonth(new Date(year, monthIndex + direction, 1))
-  }
-
-  if (showLibrary) {
-    return <TrainingLibrary backLabel="Back to calendar" onSignedOut={onSignedOut} onBack={() => {
-      setShowLibrary(false)
-      refresh()
-    }} />
-  }
-
-  if (showCreateSession) {
-    return <CreateSessionForm
-      initialDate={selectedDate}
-      backLabel="Back to calendar"
-      onSignedOut={onSignedOut}
-      onBack={() => setShowCreateSession(false)}
-      onManageTypes={() => { setShowCreateSession(false); setShowLibrary(true) }}
-      onSaved={(id) => {
-        setShowCreateSession(false)
-        setSelectedSessionId(id)
-        refresh()
-      }}
-    />
-  }
-
-  if (selectedSessionId) {
-    return <SessionDetails
-      key={selectedSessionId}
-      sessionId={selectedSessionId}
-      backLabel="Back to calendar"
-      onSignedOut={onSignedOut}
-      onBack={() => { setSelectedSessionId(null); refresh() }}
-    />
+    setParams({ month: formatDate(new Date(year, monthIndex + direction, 1)).slice(0, 7) })
   }
 
   return (
     <section aria-labelledby="calendar-heading">
-      <button type="button" onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Back to history</button>
       <h2 id="calendar-heading" className="text-2xl font-semibold">Training calendar</h2>
 
       <div className="my-6 flex items-center justify-between gap-3">
@@ -130,7 +94,7 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
                   <button
                     key={date}
                     type="button"
-                    onClick={() => setSelectedDate(date)}
+                    onClick={() => setParams({ month: monthText, date })}
                     aria-pressed={date === selectedDate}
                     aria-current={date === today ? 'date' : undefined}
                     aria-label={`${formatDisplayDate(date)}, ${count} ${count === 1 ? 'session' : 'sessions'}`}
@@ -149,7 +113,7 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
             <div className="mt-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h3 className="font-semibold">Sessions on {formatDisplayDate(selectedDate)}</h3>
-                <button type="button" onClick={() => setShowCreateSession(true)} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</button>
+                <Link to={`/calendar/sessions/new?${dayParams}`} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</Link>
               </div>
               {selectedSessions.length === 0 ? (
                 <p className="text-slate-600 dark:text-slate-300">No sessions on this date.</p>
@@ -157,10 +121,10 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
                 <ul className="space-y-3">
                   {selectedSessions.map((session) => (
                     <li key={session.id}>
-                      <button type="button" onClick={() => setSelectedSessionId(session.id)} className="w-full cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-left hover:border-emerald-600 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400">
+                      <Link to={`/calendar/sessions/${session.id}?${dayParams}`} className="block w-full cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-left hover:border-emerald-600 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400">
                         <span className="block break-words font-medium text-emerald-700 dark:text-emerald-400">{session.training_name}</span>
                         <span className="mt-1 block text-sm text-slate-500 dark:text-slate-400">{session.category === 'cardio' ? 'Cardio' : 'Strength'}</span>
-                      </button>
+                      </Link>
                     </li>
                   ))}
                 </ul>

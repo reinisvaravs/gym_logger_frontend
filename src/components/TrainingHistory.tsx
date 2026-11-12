@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react'
-import { logout } from '../api/auth'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { getTrainingSessions, type TrainingSession, type TrainingSessionFilters } from '../api/trainingSessions'
-import SessionDetails from './SessionDetails'
-import TrainingLibrary from './TrainingLibrary'
-import CreateSessionForm from './CreateSessionForm'
 import HistoryFilters from './HistoryFilters'
-import TrainingCalendar from './TrainingCalendar'
-import AccountSettings from './AccountSettings'
 import { formatDisplayDate } from '../formatDate'
 
 type TrainingHistoryProps = {
@@ -18,20 +13,20 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [retryCount, setRetryCount] = useState(0)
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const [logoutError, setLogoutError] = useState('')
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
-  const [showLibrary, setShowLibrary] = useState(false)
-  const [showCreateSession, setShowCreateSession] = useState(false)
-  const [showCalendar, setShowCalendar] = useState(false)
-  const [showSettings, setShowSettings] = useState(false)
-  const [filters, setFilters] = useState<TrainingSessionFilters>({ search: '', category: '', from: '', to: '' })
-  const hasFilters = Boolean(filters.search || filters.category || filters.from || filters.to)
+  const [params, setParams] = useSearchParams()
+  const location = useLocation()
+  const search = params.get('search') || ''
+  const categoryParam = params.get('category')
+  const category = categoryParam === 'strength' || categoryParam === 'cardio' ? categoryParam : ''
+  const from = params.get('from') || ''
+  const to = params.get('to') || ''
+  const filters: TrainingSessionFilters = { search, category, from, to }
+  const hasFilters = Boolean(search || category || from || to)
 
   useEffect(() => {
     let active = true
 
-    getTrainingSessions(filters.from, filters.to, filters.search, filters.category)
+    getTrainingSessions(from, to, search, category)
       .then((data) => {
         if (!active) return
         if (data === null) {
@@ -50,7 +45,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
     return () => {
       active = false
     }
-  }, [onSignedOut, retryCount, filters])
+  }, [onSignedOut, retryCount, from, to, search, category])
 
   function retry() {
     setError('')
@@ -58,93 +53,25 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
     setRetryCount(retryCount + 1)
   }
 
-  async function handleLogout() {
-    if (isLoggingOut) return
-    setLogoutError('')
-    setIsLoggingOut(true)
-
-    try {
-      await logout()
-      onSignedOut()
-    } catch (error) {
-      setLogoutError(error instanceof Error ? error.message : 'Could not log out.')
-    } finally {
-      setIsLoggingOut(false)
-    }
-  }
-
-  if (showSettings) {
-    return <AccountSettings onSignedOut={onSignedOut} onBack={() => setShowSettings(false)} />
-  }
-
-  if (showCalendar) {
-    return <TrainingCalendar onSignedOut={onSignedOut} onBack={() => { setShowCalendar(false); retry() }} />
-  }
-
-  if (showCreateSession) {
-    return <CreateSessionForm
-      onSignedOut={onSignedOut}
-      onBack={() => setShowCreateSession(false)}
-      onManageTypes={() => { setShowCreateSession(false); setShowLibrary(true) }}
-      onSaved={(id) => {
-        setShowCreateSession(false)
-        setSelectedSessionId(id)
-        retry()
-      }}
-    />
-  }
-
-  if (showLibrary) {
-    return <TrainingLibrary onSignedOut={onSignedOut} onBack={() => {
-      setShowLibrary(false)
-      retry()
-    }} />
-  }
-
-  if (selectedSessionId) {
-    return (
-      <SessionDetails
-        key={selectedSessionId}
-        sessionId={selectedSessionId}
-        onBack={() => {
-          setSelectedSessionId(null)
-          retry()
-        }}
-        onSignedOut={onSignedOut}
-      />
-    )
-  }
-
   return (
     <section aria-labelledby="history-heading">
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h2 id="history-heading" className="text-2xl font-semibold">Training history</h2>
-        <button
-          type="button"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 disabled:cursor-wait disabled:opacity-60"
-        >
-          {isLoggingOut ? 'Logging out…' : 'Log out'}
-        </button>
-      </div>
-
-      {logoutError && <p role="alert" className="mb-4 text-sm text-red-700 dark:text-red-400">{logoutError}</p>}
-
-      <div className="mb-6 flex flex-wrap gap-3">
-        <button type="button" onClick={() => setShowCreateSession(true)} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</button>
-        <button type="button" onClick={() => setShowCalendar(true)} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Calendar</button>
-        <button type="button" onClick={() => setShowLibrary(true)} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Manage training types</button>
-        <button type="button" onClick={() => setShowSettings(true)} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Account settings</button>
+        <Link to={`/history/sessions/new${location.search}`} className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</Link>
       </div>
 
       <HistoryFilters
+        key={params.toString()}
         initialFilters={filters}
         isLoading={isLoading}
         onApply={(updated) => {
-          setError('')
-          setIsLoading(true)
-          setFilters(updated)
+          const next = new URLSearchParams()
+          if (updated.search) next.set('search', updated.search)
+          if (updated.category) next.set('category', updated.category)
+          if (updated.from) next.set('from', updated.from)
+          if (updated.to) next.set('to', updated.to)
+          setParams(next)
+          retry()
         }}
       />
 
@@ -168,13 +95,12 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
               <article className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <h3 className="min-w-0 break-words font-semibold">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedSessionId(session.id)}
+                    <Link
+                      to={`/history/sessions/${session.id}${location.search}`}
                       className="cursor-pointer text-left text-emerald-700 dark:text-emerald-400 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400"
                     >
                       {session.training_name}
-                    </button>
+                    </Link>
                   </h3>
                   <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-1 text-xs text-slate-600 dark:text-slate-300">
                     {session.category === 'cardio' ? 'Cardio' : 'Strength'}
