@@ -1,4 +1,15 @@
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+import { apiUrl } from './config'
+
+export async function logout() {
+  const response = await fetch(`${apiUrl}/users/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('Could not log out. Please try again.')
+  }
+}
 
 export async function getCurrentUser(): Promise<string | null> {
   const response = await fetch(`${apiUrl}/me`, {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getCurrentUser } from './api/auth'
 import LoginForm from './components/LoginForm'
+import TrainingHistory from './components/TrainingHistory'
 
 function App() {
   const [userId, setUserId] = useState<string | null>(null)
@@ -28,7 +29,7 @@ function App() {
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
-      <div className="mx-auto max-w-md">
+      <div className={userId ? 'mx-auto max-w-3xl' : 'mx-auto max-w-md'}>
         <header className="mb-8">
           <h1 className="text-3xl font-bold">Gym Logger</h1>
           <p className="mt-2 text-slate-600">Track your strength training and cardio sessions.</p>
@@ -37,9 +38,10 @@ function App() {
         {isCheckingSession ? (
           <p role="status" className="text-slate-600">Checking your session…</p>
         ) : userId ? (
-          <section className="rounded-xl border border-slate-200 bg-white p-6">
-            <h2 className="text-xl font-semibold">You’re logged in</h2>
-          </section>
+          <TrainingHistory onSignedOut={() => {
+            setUserId(null)
+            setSessionError('')
+          }} />
         ) : (
           <>
             {sessionError && <p role="alert" className="mb-4 text-sm text-red-700">{sessionError}</p>}

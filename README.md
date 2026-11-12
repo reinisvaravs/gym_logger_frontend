@@ -18,18 +18,23 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Login with email and password.
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
-- A confirmation screen after login; training history is not connected yet.
+- Training history with exercise names, dates, categories, and notes.
+- Loading, empty, and error states with retry.
+- Logout and return to login when history requests report an expired session.
 
-Create a test account using the backend's `users.rest`. Registration and logout screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+Create a test account using the backend's `users.rest`. Registration and session-detail screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
 
 ## Manual checks
 
 With both servers running:
 
-1. Log in with an existing account; expect the signed-in confirmation.
+1. Log in with an existing account; expect its training history in the backend's order.
 2. Refresh; the session should remain active.
 3. In a private browser window, enter a wrong password; expect the API error in the form.
-4. Stop the backend and try submitting; expect an error and an enabled button for retry.
+4. Stop the backend and reload; log in again after restarting it. History errors offer a retry button.
+5. Log out; expect the login form. Refresh and confirm you remain logged out.
+6. Log in with an account without sessions; expect the empty-history message.
+7. Invalidate the browser session through the backend, then refresh; expect login instead of private history.
 
 Repeated login attempts may trigger the backend's shared authentication rate limit.
 
