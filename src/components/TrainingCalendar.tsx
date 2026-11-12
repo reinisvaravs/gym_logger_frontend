@@ -3,6 +3,7 @@ import { getTrainingSessions, type TrainingSession } from '../api/trainingSessio
 import SessionDetails from './SessionDetails'
 import CreateSessionForm from './CreateSessionForm'
 import TrainingLibrary from './TrainingLibrary'
+import { formatDisplayDate } from '../formatDate'
 
 type TrainingCalendarProps = {
   onBack: () => void
@@ -102,7 +103,7 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
 
       <div className="my-6 flex items-center justify-between gap-3">
         <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month" className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Previous</button>
-        <h3 aria-live="polite" className="text-center font-semibold">{month.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</h3>
+        <h3 aria-live="polite" className="text-center font-semibold">{month.toLocaleDateString('en-GB', { month: 'short', year: year === new Date().getFullYear() ? undefined : 'numeric' })}</h3>
         <button type="button" onClick={() => changeMonth(1)} aria-label="Next month" className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Next</button>
       </div>
 
@@ -132,7 +133,7 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
                     onClick={() => setSelectedDate(date)}
                     aria-pressed={date === selectedDate}
                     aria-current={date === today ? 'date' : undefined}
-                    aria-label={`${date}, ${count} ${count === 1 ? 'session' : 'sessions'}`}
+                    aria-label={`${formatDisplayDate(date)}, ${count} ${count === 1 ? 'session' : 'sessions'}`}
                     className={`flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-lg border text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 ${date === selectedDate ? 'border-emerald-700 bg-emerald-700 text-white' : date === today ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900' : 'border-transparent text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                   >
                     <span>{day}</span>
@@ -147,7 +148,7 @@ function TrainingCalendar({ onBack, onSignedOut }: TrainingCalendarProps) {
           {selectedDate ? (
             <div className="mt-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h3 className="font-semibold">Sessions on {selectedDate}</h3>
+                <h3 className="font-semibold">Sessions on {formatDisplayDate(selectedDate)}</h3>
                 <button type="button" onClick={() => setShowCreateSession(true)} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</button>
               </div>
               {selectedSessions.length === 0 ? (

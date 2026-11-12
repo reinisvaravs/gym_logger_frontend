@@ -7,6 +7,7 @@ import CreateSessionForm from './CreateSessionForm'
 import HistoryFilters from './HistoryFilters'
 import TrainingCalendar from './TrainingCalendar'
 import AccountSettings from './AccountSettings'
+import { formatDisplayDate } from '../formatDate'
 
 type TrainingHistoryProps = {
   onSignedOut: (message?: string, success?: boolean) => void
@@ -180,7 +181,7 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
                   </span>
                 </div>
                 <time dateTime={session.performed_on} className="mt-1 block text-sm text-slate-500 dark:text-slate-400">
-                  {session.performed_on}
+                  {formatDisplayDate(session.performed_on)}
                 </time>
                 {session.notes && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-slate-600 dark:text-slate-300">{session.notes}</p>}
               </article>

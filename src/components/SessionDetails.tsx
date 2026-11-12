@@ -3,6 +3,7 @@ import { getTrainingSession, deleteTrainingSet, deleteTrainingSession, type Trai
 import EditSessionForm from './EditSessionForm'
 import EditSetForm from './EditSetForm'
 import AddSetForm from './AddSetForm'
+import { formatDisplayDate } from '../formatDate'
 import { useUnits } from '../UnitsContext'
 import { displayWeight, displayDistance, displayElevation, displaySpeed } from '../units'
 
@@ -83,7 +84,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
 
   async function handleDeleteSession() {
     if (!session || isBusy) return
-    if (!window.confirm(`Permanently delete "${session.training_name}" on ${session.performed_on} and all its sets?`)) return
+    if (!window.confirm(`Permanently delete "${session.training_name}" on ${formatDisplayDate(session.performed_on)} and all its sets?`)) return
 
     setDeleteError('')
     setSuccessMessage('')
@@ -173,7 +174,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
               </div>
             </div>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-              <time dateTime={session.performed_on}>{session.performed_on}</time>
+              <time dateTime={session.performed_on}>{formatDisplayDate(session.performed_on)}</time>
               {' · '}
               {session.category === 'cardio' ? 'Cardio' : session.category === 'bodyweight_reps' ? 'Bodyweight' : 'Weighted strength'}
             </p>
