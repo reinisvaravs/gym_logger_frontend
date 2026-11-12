@@ -15,7 +15,8 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 
 ## Current features
 
-- Login with email and password.
+- Registration with name, email, and password.
+- Login with email and password, with switching between both forms.
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
@@ -23,13 +24,13 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Loading, empty, and error states with retry.
 - Logout and return to login when history requests report an expired session.
 
-Create a test account using the backend's `users.rest`. Registration and training-editing screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Training-editing screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
 
 ## Manual checks
 
 With both servers running:
 
-1. Log in with an existing account; expect its training history in the backend's order.
+1. Create an account, check the success message and prefilled email, then log in; expect its training history in the backend's order.
 2. Refresh; the session should remain active.
 3. Select a session name; check its sets and measurements, then return to history.
 4. In a private browser window, enter a wrong password; expect the API error in the form.
@@ -38,7 +39,9 @@ With both servers running:
 7. Log in with an account without sessions; expect the empty-history message.
 8. Invalidate the browser session through the backend, then refresh; expect login instead of private history.
 
-Repeated login attempts may trigger the backend's shared authentication rate limit.
+Also try registering an existing email; the form should show the duplicate-account error.
+
+Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 
 ## Commands
 

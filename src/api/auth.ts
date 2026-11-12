@@ -1,5 +1,19 @@
 import { apiUrl } from './config'
 
+export async function register(firstName: string, email: string, password: string) {
+  const response = await fetch(`${apiUrl}/users/register`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ firstName: firstName.trim(), email: email.trim(), password }),
+  })
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not create your account. Please try again.')
+  }
+}
+
 export async function logout() {
   const response = await fetch(`${apiUrl}/users/logout`, {
     method: 'POST',

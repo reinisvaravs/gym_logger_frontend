@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react'
 import { getCurrentUser } from './api/auth'
 import LoginForm from './components/LoginForm'
 import TrainingHistory from './components/TrainingHistory'
+import RegisterForm from './components/RegisterForm'
 
 function App() {
   const [userId, setUserId] = useState<string | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [sessionError, setSessionError] = useState('')
+  const [authView, setAuthView] = useState<'login' | 'register'>('login')
+  const [registeredEmail, setRegisteredEmail] = useState('')
+  const [registrationMessage, setRegistrationMessage] = useState('')
 
   useEffect(() => {
     let active = true
@@ -41,11 +45,36 @@ function App() {
           <TrainingHistory onSignedOut={() => {
             setUserId(null)
             setSessionError('')
+            setAuthView('login')
+            setRegistrationMessage('')
+            setRegisteredEmail('')
           }} />
         ) : (
           <>
             {sessionError && <p role="alert" className="mb-4 text-sm text-red-700">{sessionError}</p>}
-            <LoginForm onLogin={setUserId} />
+            {authView === 'register' ? (
+              <RegisterForm
+                onLogin={() => setAuthView('login')}
+                onRegistered={(email) => {
+                  setRegisteredEmail(email)
+                  setRegistrationMessage('Account created. Log in to continue.')
+                  setSessionError('')
+                  setAuthView('login')
+                }}
+              />
+            ) : (
+              <>
+                {registrationMessage && <p role="status" className="mb-4 text-sm text-emerald-800">{registrationMessage}</p>}
+                <LoginForm
+                  initialEmail={registeredEmail}
+                  onLogin={setUserId}
+                  onRegister={() => {
+                    setRegistrationMessage('')
+                    setAuthView('register')
+                  }}
+                />
+              </>
+            )}
           </>
         )}
       </div>

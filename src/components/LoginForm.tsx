@@ -3,10 +3,12 @@ import { login } from '../api/auth'
 
 type LoginFormProps = {
   onLogin: (userId: string) => void
+  onRegister: () => void
+  initialEmail?: string
 }
 
-function LoginForm({ onLogin }: LoginFormProps) {
-  const [email, setEmail] = useState('')
+function LoginForm({ onLogin, onRegister, initialEmail = '' }: LoginFormProps) {
+  const [email, setEmail] = useState(initialEmail)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -72,6 +74,10 @@ function LoginForm({ onLogin }: LoginFormProps) {
             className="w-full cursor-pointer rounded-lg bg-emerald-700 px-4 py-2.5 font-medium text-white hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-wait disabled:opacity-60"
           >
             {isSubmitting ? 'Logging in…' : 'Log in'}
+          </button>
+
+          <button type="button" onClick={onRegister} className="w-full cursor-pointer text-sm font-medium text-emerald-700 underline disabled:cursor-wait disabled:opacity-60">
+            Create an account
           </button>
         </fieldset>
       </form>
