@@ -35,13 +35,13 @@ export function SessionDetailPage({ onSignedOut }: SessionPageProps) {
   const { sessionId } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const section = location.pathname.startsWith('/calendar') ? 'calendar' : 'history'
+  const section = location.pathname.startsWith('/progress') ? 'progress' : location.pathname.startsWith('/calendar') ? 'calendar' : 'history'
   const parentUrl = `/${section}${location.search}`
 
   return (
     <>
       <nav aria-label="Breadcrumb" className="session-breadcrumb">
-        <Link to={parentUrl} >{section === 'calendar' ? 'Calendar' : 'History'}</Link>
+        <Link to={parentUrl} >{section === 'progress' ? 'Progress' : section === 'calendar' ? 'Calendar' : 'History'}</Link>
         <span aria-hidden="true">/</span><span aria-current="page">Session details</span>
       </nav>
       <SessionDetails key={sessionId} hideBack sessionId={sessionId || ''} onSignedOut={onSignedOut} onBack={() => navigate(parentUrl, { replace: true })} />

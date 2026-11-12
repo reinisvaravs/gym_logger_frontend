@@ -26,6 +26,7 @@ Production builds use `/api` on the same origin and are served by Express. The r
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
+- Progress page with date filters, training-day/strength/cardio totals, weekly activity, strength records and reps-at-weight charts, and separate cardio activity summaries/history.
 - History search, strength/cardio filtering, and inclusive date-range filters.
 - Monthly calendar with session counts, selected-day sessions, and logging on a chosen date.
 - Session details with ordered strength/cardio sets, measurement units, and calculated cardio average speed.
@@ -42,7 +43,7 @@ Create an account from the login screen. Registration returns to login with the 
 
 ## Navigation
 
-The persistent navigation has four sections: History, Calendar, Library, and Settings. Desktop uses a sidebar; smaller screens use a compact navigation bar. Only the current section is highlighted. Log session is a separate action in the page header. Logout is available across signed-in pages.
+The persistent navigation has five sections: History, Calendar, Progress, Library, and Settings. Desktop uses a sidebar; smaller screens use a compact navigation bar. Only the current section is highlighted. Log session is a separate action in the page header. Logout is available across signed-in pages.
 
 The interface shares button, field, panel, status-message, and typography styles across pages. History uses compact session rows; session details group measurements into cards. Theme and measurement preferences live in Settings.
 
@@ -51,10 +52,11 @@ The interface shares button, field, panel, status-message, and typography styles
 | Login / registration | `/login`, `/register` |
 | History | `/history` |
 | Calendar | `/calendar` |
+| Progress | `/progress` |
 | Training library | `/training-types` |
 | Account settings | `/settings` |
 | Log session | `/history/sessions/new` or `/calendar/sessions/new` |
-| Session details | `/history/sessions/:sessionId` or `/calendar/sessions/:sessionId` |
+| Session details | `/history/sessions/:sessionId`, `/calendar/sessions/:sessionId`, or `/progress/sessions/:sessionId` |
 
 Session pages show breadcrumbs to their parent section. History filters live in the query string; calendar URLs store `month=YYYY-MM` and `date=YYYY-MM-DD`. Browser Back/Forward, refresh, and copied URLs preserve that context. Login is required for private pages. Unsaved form drafts are not persisted when navigating away.
 
@@ -211,3 +213,19 @@ Repeated registration/login attempts may trigger the backend's shared authentica
 - `npm run preview`: preview the production build. Its default port differs from the allowed local frontend origin; adjust the backend origin when testing authentication there.
 
 See [the backend API reference](../backend/API-REFERENCE.md) for request and response details.
+
+## Progress checks
+
+- Open Progress: training days count a calendar date once even with multiple exercises. Strength sets and cardio duration/distance match the selected period.
+- Switch between the last 30/90 days, this year, all history, and custom dates. Boundary dates are inclusive. An empty period should show an empty state; reversed dates should show validation.
+- Weekly charts show up to the latest 12 weeks in the selected period, with Monday starts and zero weeks. First/last weeks can be partial. Overall totals cover the full selected period.
+- Select a strength exercise and weight. Compare daily best reps and records to the actual logged sets, including fractional reps and tied records.
+- Pull-ups show bodyweight reps without inferring body weight; zero/empty added weight are grouped together. Dumbbell loads remain per dumbbell.
+- Switch weekly sets/reps/recorded volume; volume is available only for weighted exercises and is not a strength score.
+- Select indoor/outdoor cardio separately. Missing distance/heart rate should show a dash, never a fabricated zero. Coverage states how many sets have measurements.
+- Average speed uses eligible total distance / duration; heart rate is duration-weighted over available readings. Compare a long and a short ride to check weighting.
+- Select a record/chart point/history date; open session details and use the Progress breadcrumb. Selection and dates should remain. Editing/deleting a session should update statistics on return.
+- Change units in Settings; weights, distance, speed, and recorded volume should convert. Check both themes and mobile widths.
+- Log out and open `/progress`; it must redirect to login. Stop the backend and verify the error/retry state.
+
+Progress uses one authenticated `/statistics` response, with charts drawn using SVG and existing app styles. No chart dependency or stored statistics table is added. Only logged exercises appear in selectors; archived exercises with history remain included.

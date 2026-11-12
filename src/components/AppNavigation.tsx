@@ -33,6 +33,7 @@ function AppNavigation({ onSignedOut }: AppNavigationProps) {
       <nav aria-label="Main navigation" className="sidebar-links">
         <NavLink to="/history" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}><AppIcon name="history" /><span>History</span></NavLink>
         <NavLink to="/calendar" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}><AppIcon name="calendar" /><span>Calendar</span></NavLink>
+        <NavLink to="/progress" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}><AppIcon name="activity" /><span>Progress</span></NavLink>
         <NavLink to="/training-types" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}><AppIcon name="library" /><span>Library</span></NavLink>
         <NavLink to="/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}><AppIcon name="settings" /><span>Settings</span></NavLink>
       </nav>

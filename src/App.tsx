@@ -12,11 +12,12 @@ import AppIcon from './components/AppIcon'
 import BrandLogo from './components/BrandLogo'
 import { formatDisplayDate } from './formatDate'
 import { NewSessionPage, SessionDetailPage } from './components/SessionPages'
+import ProgressPage from './components/ProgressPage'
 
 function App() {
   const navigate = useNavigate()
   const location = useLocation()
-  const sectionName = location.pathname.startsWith('/calendar') ? 'Calendar' : location.pathname.startsWith('/training-types') ? 'Training library' : location.pathname.startsWith('/settings') ? 'Account settings' : 'Training history'
+  const sectionName = location.pathname.startsWith('/progress') ? 'Training progress' : location.pathname.startsWith('/calendar') ? 'Calendar' : location.pathname.startsWith('/training-types') ? 'Training library' : location.pathname.startsWith('/settings') ? 'Account settings' : 'Training history'
   const now = new Date()
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
   const [userId, setUserId] = useState<string | null>(null)
@@ -72,6 +73,8 @@ function App() {
             <Routes>
               <Route path="/history" element={<TrainingHistory onSignedOut={handleSignedOut} />} />
               <Route path="/calendar" element={<TrainingCalendar onSignedOut={handleSignedOut} />} />
+              <Route path="/progress" element={<ProgressPage onSignedOut={handleSignedOut} />} />
+              <Route path="/progress/sessions/:sessionId" element={<SessionDetailPage onSignedOut={handleSignedOut} />} />
               <Route path="/training-types" element={<TrainingLibrary hideBack onBack={() => navigate('/history')} onSignedOut={handleSignedOut} />} />
               <Route path="/settings" element={<AccountSettings hideBack onBack={() => navigate('/history')} onSignedOut={handleSignedOut} />} />
               {['history', 'calendar'].map((section) => (
