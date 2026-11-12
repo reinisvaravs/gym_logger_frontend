@@ -11,7 +11,9 @@ npm run dev
 
 Open `http://localhost:5173`. Start the backend separately on port 4000 and set its `FRONTEND_URL` to `http://localhost:5173`.
 
-The API URL defaults to `http://localhost:4000`. To change it, copy `.env.example` to `.env` and set `VITE_API_URL` without a trailing slash. Restart Vite after changing environment values. Vite variables are public; do not put secrets in them.
+The development API URL defaults to `http://localhost:4000`. To change it, copy `.env.example` to `.env` and set `VITE_API_URL` without a trailing slash. Restart Vite after changing environment values. Vite variables are public; do not put secrets in them.
+
+Production builds use `/api` on the same origin and are served by Express. The repositories stay separate: Render deploys from [gym_logger_backend](https://github.com/reinisvaravs/gym_logger_backend), whose build script clones this public repository’s `main` branch and builds it. See [the deployment guide](https://github.com/reinisvaravs/gym_logger_backend/blob/main/DEPLOYMENT.md). After pushing frontend-only changes, manually redeploy the backend Render service to publish the new frontend. No separate frontend service or production environment variables are needed. `npm run preview` only previews static files; use the combined server for production API checks.
 
 ## Current features
 
