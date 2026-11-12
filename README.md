@@ -20,6 +20,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Account settings with current-password verification and new-password confirmation.
 - Account deletion with password verification, permanent-deletion confirmation, and return to login.
 - Light/dark mode across the app, saved in the browser with a system-preference default.
+- Saved metric/imperial preference for weights, distances, and elevation in forms and session details.
 - Loading state and API/network error messages.
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
@@ -36,6 +37,14 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Logout and return to login when history requests report an expired session.
 
 Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+
+## Measurement units
+
+Choose Metric or Imperial in the header. Metric is the default; the choice is stored as `gym-units` in localStorage for this browser, not per account.
+
+Imperial uses pounds, miles, and feet. Reps, seconds, bpm, watts, and cadence remain unchanged. The frontend converts measurements for display and converts input back to kg/km/metres before sending it to the API. Stored values and API field names remain metric.
+
+Converted inputs/display values use up to three decimal places. Saving an unchanged measurement in the set editor preserves the exact original metric value. Open forms retain the unit system selected when they were opened; cancel/back and reopen to use a newly selected preference. This prevents existing draft numbers from being reinterpreted.
 
 ## Manual checks
 
@@ -148,6 +157,15 @@ Theme checks:
 - Refresh and revisit the app; the selected theme should persist through login and logout.
 - Check inputs, dropdowns, calendar days, selected states, error messages, and account deletion in both themes.
 - Remove `gym-theme` from localStorage and refresh; the initial theme should match the system setting.
+
+Unit preference checks:
+
+- Switch units in session details: 20 kg should show about 44.092 lb; distances and elevation should switch to mi/ft.
+- Refresh; the preference should persist. Login/logout should not change it.
+- Log/add/edit weighted and cardio sets in Imperial, then switch to Metric to check the saved conversions.
+- Save an unchanged converted set; the metric values should not drift.
+- Clear an optional added weight/elevation field; it should stay absent after saving.
+- Change the preference while a form is open; its labels and numbers should retain the original units, with a notice explaining how to switch.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

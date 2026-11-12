@@ -1,13 +1,18 @@
 import type { TrainingCategory } from '../api/trainingTypes'
 import type { TrainingSet } from '../api/trainingSessions'
+import { displayWeight, displayDistance, displayElevation, type UnitSystem } from '../units'
 
 type SessionSetFieldsProps = {
   setId: number | string
   category: TrainingCategory
   initialSet?: TrainingSet
+  units: UnitSystem
 }
 
-function SessionSetFields({ setId, category, initialSet }: SessionSetFieldsProps) {
+function SessionSetFields({ setId, category, initialSet, units }: SessionSetFieldsProps) {
+  const weightUnit = units === 'imperial' ? 'lb' : 'kg'
+  const distanceUnit = units === 'imperial' ? 'mi' : 'km'
+  const elevationUnit = units === 'imperial' ? 'ft' : 'm'
   const inputClass = 'mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400'
 
   return (
@@ -20,8 +25,8 @@ function SessionSetFields({ setId, category, initialSet }: SessionSetFieldsProps
               <input id={`duration-${setId}`} name={`durationSeconds-${setId}`} type="number" min="1" step="1" required defaultValue={initialSet?.duration_seconds ?? ''} className={inputClass} />
             </div>
             <div>
-              <label htmlFor={`distance-${setId}`} className="block text-sm font-medium">Distance (km)</label>
-              <input id={`distance-${setId}`} name={`distanceKm-${setId}`} type="number" min="0" step="0.001" required defaultValue={initialSet?.distance_km ?? ''} className={inputClass} />
+              <label htmlFor={`distance-${setId}`} className="block text-sm font-medium">Distance ({distanceUnit})</label>
+              <input id={`distance-${setId}`} name={`distanceKm-${setId}`} type="number" min="0" step="0.001" required defaultValue={initialSet?.distance_km != null ? displayDistance(initialSet.distance_km, units) : ''} className={inputClass} />
             </div>
           </>
         ) : (
@@ -32,9 +37,9 @@ function SessionSetFields({ setId, category, initialSet }: SessionSetFieldsProps
             </div>
             <div>
               <label htmlFor={`weight-${setId}`} className="block text-sm font-medium">
-                {category === 'bodyweight_reps' ? 'Added weight (kg, optional)' : 'Weight (kg)'}
+                {category === 'bodyweight_reps' ? `Added weight (${weightUnit}, optional)` : `Weight (${weightUnit})`}
               </label>
-              <input id={`weight-${setId}`} name={`weightKg-${setId}`} type="number" min="0" step="0.001" required={category === 'weighted_reps'} defaultValue={initialSet?.weight_kg ?? ''} className={inputClass} />
+              <input id={`weight-${setId}`} name={`weightKg-${setId}`} type="number" min="0" step="0.001" required={category === 'weighted_reps'} defaultValue={initialSet?.weight_kg != null ? displayWeight(initialSet.weight_kg, units) : ''} className={inputClass} />
             </div>
           </>
         )}
@@ -57,8 +62,8 @@ function SessionSetFields({ setId, category, initialSet }: SessionSetFieldsProps
               <input id={`cadence-${setId}`} name={`avgCadence-${setId}`} type="number" min="0" step="0.01" defaultValue={initialSet?.avg_cadence ?? ''} className={inputClass} />
             </div>
             <div>
-              <label htmlFor={`elevation-${setId}`} className="block text-sm font-medium">Elevation gain (m)</label>
-              <input id={`elevation-${setId}`} name={`elevationGainM-${setId}`} type="number" min="0" step="0.001" defaultValue={initialSet?.elevation_gain_m ?? ''} className={inputClass} />
+              <label htmlFor={`elevation-${setId}`} className="block text-sm font-medium">Elevation gain ({elevationUnit})</label>
+              <input id={`elevation-${setId}`} name={`elevationGainM-${setId}`} type="number" min="0" step="0.001" defaultValue={initialSet?.elevation_gain_m != null ? displayElevation(initialSet.elevation_gain_m, units) : ''} className={inputClass} />
             </div>
           </div>
         </details>

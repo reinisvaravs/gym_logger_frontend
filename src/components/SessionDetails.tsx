@@ -3,6 +3,8 @@ import { getTrainingSession, deleteTrainingSet, deleteTrainingSession, type Trai
 import EditSessionForm from './EditSessionForm'
 import EditSetForm from './EditSetForm'
 import AddSetForm from './AddSetForm'
+import { useUnits } from '../UnitsContext'
+import { displayWeight, displayDistance, displayElevation } from '../units'
 
 type SessionDetailsProps = {
   backLabel?: string
@@ -12,6 +14,7 @@ type SessionDetailsProps = {
 }
 
 function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to history' }: SessionDetailsProps) {
+  const { unitSystem } = useUnits()
   const [session, setSession] = useState<TrainingSessionDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -206,7 +209,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
                         <div><dt className="text-slate-500 dark:text-slate-400">Duration</dt><dd className="mt-1 font-medium">{Math.floor(set.duration_seconds / 60)}:{String(set.duration_seconds % 60).padStart(2, '0')} min</dd></div>
                       )}
                       {set.distance_km !== null && (
-                        <div><dt className="text-slate-500 dark:text-slate-400">Distance</dt><dd className="mt-1 font-medium">{Number(set.distance_km)} km</dd></div>
+                        <div><dt className="text-slate-500 dark:text-slate-400">Distance</dt><dd className="mt-1 font-medium">{displayDistance(set.distance_km, unitSystem)} {unitSystem === 'imperial' ? 'mi' : 'km'}</dd></div>
                       )}
                       {set.avg_heart_rate_bpm !== null && (
                         <div><dt className="text-slate-500 dark:text-slate-400">Avg. heart rate</dt><dd className="mt-1 font-medium">{set.avg_heart_rate_bpm} bpm</dd></div>
@@ -218,7 +221,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
                         <div><dt className="text-slate-500 dark:text-slate-400">Avg. cadence</dt><dd className="mt-1 font-medium">{Number(set.avg_cadence)}</dd></div>
                       )}
                       {set.elevation_gain_m !== null && (
-                        <div><dt className="text-slate-500 dark:text-slate-400">Elevation gain</dt><dd className="mt-1 font-medium">{Number(set.elevation_gain_m)} m</dd></div>
+                        <div><dt className="text-slate-500 dark:text-slate-400">Elevation gain</dt><dd className="mt-1 font-medium">{displayElevation(set.elevation_gain_m, unitSystem)} {unitSystem === 'imperial' ? 'ft' : 'm'}</dd></div>
                       )}
                     </>
                   ) : (
@@ -227,7 +230,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut, backLabel = 'Back to h
                         <div><dt className="text-slate-500 dark:text-slate-400">Reps</dt><dd className="mt-1 font-medium">{Number(set.reps)}</dd></div>
                       )}
                       {set.weight_kg !== null && (
-                        <div><dt className="text-slate-500 dark:text-slate-400">{session.category === 'bodyweight_reps' ? 'Added weight' : 'Weight'}</dt><dd className="mt-1 font-medium">{Number(set.weight_kg)} kg</dd></div>
+                        <div><dt className="text-slate-500 dark:text-slate-400">{session.category === 'bodyweight_reps' ? 'Added weight' : 'Weight'}</dt><dd className="mt-1 font-medium">{displayWeight(set.weight_kg, unitSystem)} {unitSystem === 'imperial' ? 'lb' : 'kg'}</dd></div>
                       )}
                     </>
                   )}

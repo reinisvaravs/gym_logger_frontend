@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm'
 import TrainingHistory from './components/TrainingHistory'
 import RegisterForm from './components/RegisterForm'
 import ThemeToggle from './components/ThemeToggle'
+import UnitsSelect from './components/UnitsSelect'
 
 function App() {
   const [userId, setUserId] = useState<string | null>(null)
@@ -39,7 +40,10 @@ function App() {
         <header className="mb-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h1 className="text-3xl font-bold">Gym Logger</h1>
-            <ThemeToggle />
+            <div className="flex flex-wrap items-center gap-2">
+              <UnitsSelect />
+              <ThemeToggle />
+            </div>
           </div>
           <p className="mt-2 text-slate-600 dark:text-slate-300">Track your strength training and cardio sessions.</p>
         </header>

@@ -1,7 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { getTrainingTypes, type TrainingType } from '../api/trainingTypes'
-import { createTrainingSession, getTrainingSessions, type TrainingSetInput } from '../api/trainingSessions'
+import { createTrainingSession, getTrainingSessions } from '../api/trainingSessions'
 import SessionSetFields from './SessionSetFields'
+import { useUnits } from '../UnitsContext'
+import { readSetInput } from '../readSetInput'
 
 type CreateSessionFormProps = {
   initialDate?: string
@@ -13,6 +15,8 @@ type CreateSessionFormProps = {
 }
 
 function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initialDate, backLabel = 'Back to history' }: CreateSessionFormProps) {
+  const { unitSystem } = useUnits()
+  const [formUnits] = useState(unitSystem)
   const [types, setTypes] = useState<TrainingType[]>([])
   const [typeId, setTypeId] = useState('')
   const [setIds, setSetIds] = useState([0])
@@ -53,21 +57,7 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initia
     const form = new FormData(event.currentTarget)
     const performedOn = String(form.get('performedOn'))
 
-    function readNumber(name: string) {
-      const value = form.get(name)
-      return value === null || value === '' ? null : Number(value)
-    }
-
-    const sets: TrainingSetInput[] = setIds.map((id) => ({
-      reps: readNumber(`reps-${id}`),
-      weightKg: readNumber(`weightKg-${id}`),
-      durationSeconds: readNumber(`durationSeconds-${id}`),
-      distanceKm: readNumber(`distanceKm-${id}`),
-      avgHeartRateBpm: readNumber(`avgHeartRateBpm-${id}`),
-      avgPowerWatts: readNumber(`avgPowerWatts-${id}`),
-      avgCadence: readNumber(`avgCadence-${id}`),
-      elevationGainM: readNumber(`elevationGainM-${id}`),
-    }))
+    const sets = setIds.map((id) => readSetInput(form, id, formUnits))
 
     setError('')
     setIsSaving(true)
@@ -96,6 +86,7 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initia
     <section aria-labelledby="create-session-heading">
       <button type="button" onClick={onBack} disabled={isSaving} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">{backLabel}</button>
       <h2 id="create-session-heading" className="text-2xl font-semibold">Log a session</h2>
+      {unitSystem !== formUnits && <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">This form keeps its original units. Go back and reopen it to use your new preference.</p>}
 
       {isLoading ? (
         <p role="status" className="mt-6 text-slate-600 dark:text-slate-300">Loading training types…</p>
@@ -136,7 +127,7 @@ function CreateSessionForm({ onBack, onSaved, onManageTypes, onSignedOut, initia
                   <h3 className="font-semibold">Set {index + 1}</h3>
                   {setIds.length > 1 && <button type="button" onClick={() => setSetIds(setIds.filter((setId) => setId !== id))} className="cursor-pointer text-sm text-red-700 dark:text-red-400 underline">Remove set</button>}
                 </div>
-                <SessionSetFields setId={id} category={selectedType.category} />
+                <SessionSetFields units={formUnits} setId={id} category={selectedType.category} />
               </div>
             ))}
 
