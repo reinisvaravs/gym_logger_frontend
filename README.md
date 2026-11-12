@@ -22,6 +22,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Training history with exercise names, dates, categories, and notes.
 - Session details with ordered strength/cardio sets and measurement units.
 - Editing session dates and notes from the detail screen.
+- Deleting sessions and their sets with confirmation, returning to refreshed history.
 - Editing saved set measurements with prefilled category-specific inputs.
 - Adding and removing sets from saved sessions, with removal confirmation and last-set protection.
 - Training library with creating, renaming, archiving, restoring, and deleting unused types.
@@ -29,7 +30,7 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Loading, empty, and error states with retry.
 - Logout and return to login when history requests report an expired session.
 
-Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Deleting sessions from the detail screen is not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
 
 ## Manual checks
 
@@ -91,6 +92,13 @@ Saved-set management checks:
 - Remove a set, cancel the confirmation, then confirm removal; check the list updates.
 - With one set remaining, removal should be disabled. Existing order gaps are preserved.
 - Stop the backend before adding/removing; expect an error without losing saved sets or draft input.
+
+Session deletion checks:
+
+- Open a disposable session and choose Delete session. Cancel first; the session should remain.
+- Confirm deletion; expect refreshed history without the session. Refresh the browser to verify.
+- Delete a session containing a single set; whole-session deletion should still be allowed.
+- Stop the backend before deleting; expect an error with the details still visible and actions enabled for retry.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

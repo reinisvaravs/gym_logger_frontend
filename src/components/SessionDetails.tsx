@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getTrainingSession, deleteTrainingSet, type TrainingSessionDetails, type TrainingSet } from '../api/trainingSessions'
+import { getTrainingSession, deleteTrainingSet, deleteTrainingSession, type TrainingSessionDetails, type TrainingSet } from '../api/trainingSessions'
 import EditSessionForm from './EditSessionForm'
 import EditSetForm from './EditSetForm'
 import AddSetForm from './AddSetForm'
@@ -21,6 +21,9 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
   const [isAddingSet, setIsAddingSet] = useState(false)
   const [deletingSetId, setDeletingSetId] = useState<string | null>(null)
   const [setActionError, setSetActionError] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+  const isBusy = deletingSetId !== null || isDeleting
 
   useEffect(() => {
     let active = true
@@ -53,7 +56,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
   }
 
   async function handleRemoveSet(set: TrainingSet) {
-    if (!session || deletingSetId) return
+    if (!session || isBusy) return
     if (session.sets.length <= 1) return
     if (!window.confirm(`Remove set ${set.set_order}?`)) return
 
@@ -71,6 +74,24 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
       setSetActionError(error instanceof Error ? error.message : 'Could not remove this set.')
     } finally {
       setDeletingSetId(null)
+    }
+  }
+
+  async function handleDeleteSession() {
+    if (!session || isBusy) return
+    if (!window.confirm(`Permanently delete "${session.training_name}" on ${session.performed_on} and all its sets?`)) return
+
+    setDeleteError('')
+    setSuccessMessage('')
+    setIsDeleting(true)
+    try {
+      const deleted = await deleteTrainingSession(session.id)
+      if (!deleted) return onSignedOut()
+      onBack()
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : 'Could not delete this training session.')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -122,7 +143,7 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
       <button
         type="button"
         onClick={onBack}
-        disabled={deletingSetId !== null}
+        disabled={isBusy}
         className="mb-6 cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
       >
         Back to history
@@ -142,7 +163,10 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
           <header className="mb-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <h2 className="min-w-0 break-words text-2xl font-semibold">{session.training_name}</h2>
-              <button type="button" disabled={deletingSetId !== null} onClick={() => { setSuccessMessage(''); setIsEditing(true) }} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 disabled:opacity-60">Edit session</button>
+              <div className="flex flex-wrap gap-3">
+                <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setIsEditing(true) }} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100 disabled:opacity-60">Edit session</button>
+                <button type="button" disabled={isBusy} onClick={handleDeleteSession} className="cursor-pointer rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-60">{isDeleting ? 'Deleting…' : 'Delete session'}</button>
+              </div>
             </div>
             <p className="mt-2 text-sm text-slate-600">
               <time dateTime={session.performed_on}>{session.performed_on}</time>
@@ -154,11 +178,13 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
 
           {successMessage && <p role="status" className="mb-4 text-sm text-emerald-800">{successMessage}</p>}
 
+          {deleteError && <p role="alert" className="mb-4 text-sm text-red-700">{deleteError}</p>}
+
           {setActionError && <p role="alert" className="mb-4 text-sm text-red-700">{setActionError}</p>}
 
           <div className="mb-3 flex items-center justify-between gap-3">
             <h3 className="text-lg font-semibold">Sets</h3>
-            <button type="button" disabled={deletingSetId !== null} onClick={() => { setSuccessMessage(''); setSetActionError(''); setIsAddingSet(true) }} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60">Add set</button>
+            <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setSetActionError(''); setIsAddingSet(true) }} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60">Add set</button>
           </div>
           {session.sets.length === 1 && <p className="mb-3 text-sm text-slate-500">A session must keep at least one set.</p>}
           {session.sets.length === 0 && <p className="text-slate-600">No sets saved.</p>}
@@ -168,8 +194,8 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <h4 className="font-medium">Set {set.set_order}</h4>
                   <div className="flex gap-4 text-sm font-medium">
-                    <button type="button" disabled={deletingSetId !== null} onClick={() => { setSuccessMessage(''); setSetActionError(''); setEditingSet(set) }} className="cursor-pointer text-emerald-700 underline disabled:opacity-60">Edit set</button>
-                    <button type="button" disabled={deletingSetId !== null || session.sets.length <= 1} onClick={() => handleRemoveSet(set)} className="cursor-pointer text-red-700 underline disabled:cursor-not-allowed disabled:opacity-50">{deletingSetId === set.id ? 'Removing…' : 'Remove set'}</button>
+                    <button type="button" disabled={isBusy} onClick={() => { setSuccessMessage(''); setSetActionError(''); setEditingSet(set) }} className="cursor-pointer text-emerald-700 underline disabled:opacity-60">Edit set</button>
+                    <button type="button" disabled={isBusy || session.sets.length <= 1} onClick={() => handleRemoveSet(set)} className="cursor-pointer text-red-700 underline disabled:cursor-not-allowed disabled:opacity-50">{deletingSetId === set.id ? 'Removing…' : 'Remove set'}</button>
                   </div>
                 </div>
                 <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">

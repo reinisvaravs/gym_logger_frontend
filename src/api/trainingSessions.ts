@@ -37,6 +37,19 @@ export type TrainingSessionUpdate = {
   notes: string | null
 }
 
+export async function deleteTrainingSession(id: string) {
+  const response = await fetch(`${apiUrl}/training-sessions/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+  if (response.status === 401) return false
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not delete this training session.')
+  }
+  return true
+}
+
 export async function updateTrainingSession(
   id: string,
   performedOn: string,
