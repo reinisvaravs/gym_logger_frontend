@@ -63,25 +63,25 @@ function TrainingCalendar({ onSignedOut }: TrainingCalendarProps) {
 
   return (
     <section aria-labelledby="calendar-heading">
-      <h2 id="calendar-heading" className="text-2xl font-semibold">Training calendar</h2>
+      <header className="page-heading"><p className="eyebrow">SHOW UP. KEEP GOING.</p><h2 id="calendar-heading">Training calendar</h2><p className="page-subtitle">A month of movement. Select a day to see or log your training.</p></header>
 
       <div className="my-6 flex items-center justify-between gap-3">
-        <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month" className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Previous</button>
+        <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month" className="btn btn-secondary">Previous</button>
         <h3 aria-live="polite" className="text-center font-semibold">{month.toLocaleDateString('en-GB', { month: 'short', year: year === new Date().getFullYear() ? undefined : 'numeric' })}</h3>
-        <button type="button" onClick={() => changeMonth(1)} aria-label="Next month" className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Next</button>
+        <button type="button" onClick={() => changeMonth(1)} aria-label="Next month" className="btn btn-secondary">Next</button>
       </div>
 
       {isLoading ? (
-        <p role="status" className="text-slate-600 dark:text-slate-300">Loading calendar…</p>
+        <p role="status" className="loading-state">Loading calendar…</p>
       ) : error ? (
         <div>
-          <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>
-          <button type="button" onClick={refresh} className="mt-3 cursor-pointer text-emerald-700 dark:text-emerald-400 underline">Try again</button>
+          <p role="alert" className="notice notice-error">{error}</p>
+          <button type="button" onClick={refresh} className="text-link mt-3">Try again</button>
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 sm:p-5">
-            <div className="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 dark:text-slate-400 sm:text-sm">
+          <div className="panel">
+            <div className="calendar-weekdays">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => <div key={day} className="py-2">{day}</div>)}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -98,7 +98,7 @@ function TrainingCalendar({ onSignedOut }: TrainingCalendarProps) {
                     aria-pressed={date === selectedDate}
                     aria-current={date === today ? 'date' : undefined}
                     aria-label={`${formatDisplayDate(date)}, ${count} ${count === 1 ? 'session' : 'sessions'}`}
-                    className={`flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-lg border text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 ${date === selectedDate ? 'border-emerald-700 bg-emerald-700 text-white' : date === today ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900' : 'border-transparent text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                    className={`calendar-cell flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-lg border text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 ${date === selectedDate ? 'border-emerald-700 bg-emerald-700 text-white' : date === today ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900' : 'border-transparent text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                   >
                     <span>{day}</span>
                     {count > 0 && <span className={`mt-1 rounded-full px-1.5 text-xs ${date === selectedDate ? 'bg-white/20' : 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300'}`}>{count}</span>}
@@ -113,7 +113,7 @@ function TrainingCalendar({ onSignedOut }: TrainingCalendarProps) {
             <div className="mt-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h3 className="font-semibold">Sessions on {formatDisplayDate(selectedDate)}</h3>
-                <Link to={`/calendar/sessions/new?${dayParams}`} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</Link>
+                <Link to={`/calendar/sessions/new?${dayParams}`} className="btn btn-primary">Log session</Link>
               </div>
               {selectedSessions.length === 0 ? (
                 <p className="text-slate-600 dark:text-slate-300">No sessions on this date.</p>

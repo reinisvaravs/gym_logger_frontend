@@ -13,7 +13,7 @@ function SessionSetFields({ setId, category, initialSet, units }: SessionSetFiel
   const weightUnit = units === 'imperial' ? 'lb' : 'kg'
   const distanceUnit = units === 'imperial' ? 'mi' : 'km'
   const elevationUnit = units === 'imperial' ? 'ft' : 'm'
-  const inputClass = 'mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400'
+  const inputClass = 'field'
 
   return (
     <>

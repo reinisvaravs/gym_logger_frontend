@@ -40,7 +40,9 @@ Create an account from the login screen. Registration returns to login with the 
 
 ## Navigation
 
-The persistent navigation has four sections: History, Calendar, Training library, and Settings. Only the current section is highlighted. Log session is an action within history/calendar, separate from the navigation tabs. Logout is available across signed-in pages.
+The persistent navigation has four sections: History, Calendar, Library, and Settings. Desktop uses a sidebar; smaller screens use a compact navigation bar. Only the current section is highlighted. Log session is a separate action in the page header. Logout is available across signed-in pages.
+
+The interface shares button, field, panel, status-message, and typography styles across pages. History uses compact session rows; session details group measurements into cards. Theme and measurement preferences live in Settings.
 
 | Page | URL |
 | --- | --- |

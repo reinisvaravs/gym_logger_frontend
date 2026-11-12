@@ -21,7 +21,7 @@ function ThemeSelect() {
         id="theme"
         value={isDark ? 'dark' : 'light'}
         onChange={(event) => changeTheme(event.target.value === 'dark')}
-        className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900 focus:outline-emerald-700 dark:focus:outline-emerald-400"
+        className="field"
       >
         <option value="light">Light</option>
         <option value="dark">Dark</option>

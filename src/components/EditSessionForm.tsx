@@ -41,26 +41,26 @@ function EditSessionForm({ session, onSaved, onCancel, onSignedOut }: EditSessio
   }
 
   return (
-    <section aria-labelledby="edit-session-heading">
+    <section className="form-page" aria-labelledby="edit-session-heading">
       <h2 id="edit-session-heading" className="text-2xl font-semibold">Edit session</h2>
       <p className="mt-2 break-words text-slate-600 dark:text-slate-300">{session.training_name}</p>
 
-      <form onSubmit={handleSubmit} className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5" aria-busy={isSaving}>
+      <form onSubmit={handleSubmit} className="panel mt-6" aria-busy={isSaving}>
         <fieldset disabled={isSaving} className="space-y-5">
           <div>
             <label htmlFor="edit-session-date" className="block text-sm font-medium">Date</label>
-            <input id="edit-session-date" type="date" value={date} onChange={(event) => setDate(event.target.value)} required className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400" />
+            <input id="edit-session-date" type="date" value={date} onChange={(event) => setDate(event.target.value)} required className="field" />
           </div>
           <div>
             <label htmlFor="edit-session-notes" className="block text-sm font-medium">Notes (optional)</label>
-            <textarea id="edit-session-notes" rows={4} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400" />
+            <textarea id="edit-session-notes" rows={4} value={notes} onChange={(event) => setNotes(event.target.value)} className="field" />
           </div>
 
-          {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>}
+          {error && <p role="alert" className="notice notice-error">{error}</p>}
 
           <div className="flex flex-wrap gap-3">
-            <button type="submit" className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 font-medium text-white hover:bg-emerald-800 disabled:opacity-60">{isSaving ? 'Saving…' : 'Save changes'}</button>
-            <button type="button" onClick={onCancel} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 px-4 py-2 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">Cancel</button>
+            <button type="submit" className="btn btn-primary">{isSaving ? 'Saving…' : 'Save changes'}</button>
+            <button type="button" onClick={onCancel} className="btn btn-secondary">Cancel</button>
           </div>
         </fieldset>
       </form>

@@ -68,10 +68,10 @@ function TrainingTypeItem({ trainingType, onUpdated, onDeleted, onSignedOut }: T
   }
 
   return (
-    <li className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5" aria-busy={isSaving}>
+    <li className={`library-item ${trainingType.archived_at ? 'is-archived' : ''}`} aria-busy={isSaving}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <h3 className="break-words font-semibold">{trainingType.training_name}</h3>
-        {trainingType.archived_at && <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-1 text-xs text-slate-600 dark:text-slate-300">Archived</span>}
+        {trainingType.archived_at && <span className="badge">Archived</span>}
       </div>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         {trainingType.category === 'cardio' ? 'Cardio' : trainingType.category === 'bodyweight_reps' ? 'Bodyweight' : 'Weighted strength'}
@@ -87,22 +87,22 @@ function TrainingTypeItem({ trainingType, onUpdated, onDeleted, onSignedOut }: T
               onChange={(event) => setName(event.target.value)}
               required
               maxLength={100}
-              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400"
+              className="field"
             />
             <div className="flex gap-4 text-sm font-medium">
-              <button type="submit" className="cursor-pointer text-emerald-700 dark:text-emerald-400 underline disabled:opacity-60">{isSaving ? 'Saving…' : 'Save name'}</button>
-              <button type="button" onClick={() => { setIsEditing(false); setError('') }} className="cursor-pointer text-slate-600 dark:text-slate-300 underline">Cancel</button>
+              <button type="submit" className="text-link">{isSaving ? 'Saving…' : 'Save name'}</button>
+              <button type="button" onClick={() => { setIsEditing(false); setError('') }} className="text-link">Cancel</button>
             </div>
           </fieldset>
         </form>
       ) : (
         <div className="mt-4 flex flex-wrap gap-4 text-sm font-medium">
-          <button type="button" disabled={isSaving} onClick={() => { setName(trainingType.training_name); setError(''); setIsEditing(true) }} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer text-emerald-700 dark:text-emerald-400 disabled:opacity-60" aria-label={`Rename ${trainingType.training_name}`} title="Rename"><PencilIcon /></button>
-          <button type="button" disabled={isSaving} onClick={handleArchive} className="cursor-pointer text-slate-600 dark:text-slate-300 underline disabled:opacity-60">{trainingType.archived_at ? 'Restore' : 'Archive'}</button>
-          <button type="button" disabled={isSaving} onClick={handleDelete} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 cursor-pointer text-red-700 dark:text-red-400 disabled:opacity-60" aria-label={`Delete ${trainingType.training_name}`} title="Delete"><TrashIcon /></button>
+          <button type="button" disabled={isSaving} onClick={() => { setName(trainingType.training_name); setError(''); setIsEditing(true) }} className="icon-button" aria-label={`Rename ${trainingType.training_name}`} title="Rename"><PencilIcon /></button>
+          <button type="button" disabled={isSaving} onClick={handleArchive} className="text-link">{trainingType.archived_at ? 'Restore' : 'Archive'}</button>
+          <button type="button" disabled={isSaving} onClick={handleDelete} className="icon-button danger" aria-label={`Delete ${trainingType.training_name}`} title="Delete"><TrashIcon /></button>
         </div>
       )}
-      {error && <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-400">{error}</p>}
+      {error && <p role="alert" className="notice notice-error">{error}</p>}
     </li>
   )
 }

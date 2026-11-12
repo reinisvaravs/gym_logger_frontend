@@ -59,38 +59,41 @@ function TrainingLibrary({ onBack, onSignedOut, backLabel = 'Back to history', h
 
   return (
     <section aria-labelledby="library-heading">
-      {!hideBack && <button type="button" onClick={onBack} className="mb-6 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
+      {!hideBack && <button type="button" onClick={onBack} className="btn btn-secondary mb-6">
         {backLabel}
       </button>}
-      <h2 id="library-heading" className="text-2xl font-semibold">Training library</h2>
-      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Your exercises and activities. Archive types you no longer use to keep their history.</p>
+      <header className="page-heading">
+        <p className="eyebrow">MAKE IT YOURS</p>
+        <h2 id="library-heading">Training library</h2>
+        <p className="page-subtitle">Your exercises and activities, ready for the next session.</p>
+      </header>
 
       {isLoading ? (
-        <p role="status" className="mt-6 text-slate-600 dark:text-slate-300">Loading training library…</p>
+        <p role="status" className="loading-state">Loading training library…</p>
       ) : error ? (
         <div className="mt-6">
-          <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>
-          <button type="button" onClick={() => { setError(''); setIsLoading(true); setRetryCount(retryCount + 1) }} className="mt-3 cursor-pointer text-emerald-700 dark:text-emerald-400 underline">Try again</button>
+          <p role="alert" className="notice notice-error">{error}</p>
+          <button type="button" onClick={() => { setError(''); setIsLoading(true); setRetryCount(retryCount + 1) }} className="text-link mt-3">Try again</button>
         </div>
       ) : (
-        <>
-          <form onSubmit={handleCreate} className="my-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5" aria-busy={isSaving}>
-            <h3 className="mb-4 font-semibold">Add a training type</h3>
+        <div className="library-layout">
+          <form onSubmit={handleCreate} className="panel my-6" aria-busy={isSaving}>
+            <h3 className="mb-4 font-semibold">Add an exercise</h3>
             <fieldset disabled={isSaving} className="space-y-4">
               <div>
                 <label htmlFor="training-name" className="block text-sm font-medium">Name</label>
-                <input id="training-name" value={name} onChange={(event) => setName(event.target.value)} required maxLength={100} placeholder="e.g. Squat or Running" className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400" />
+                <input id="training-name" value={name} onChange={(event) => setName(event.target.value)} required maxLength={100} placeholder="e.g. Squat or Running" className="field" />
               </div>
               <div>
                 <label htmlFor="training-category" className="block text-sm font-medium">Category</label>
-                <select id="training-category" value={category} onChange={(event) => setCategory(event.target.value as TrainingCategory)} className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400">
+                <select id="training-category" value={category} onChange={(event) => setCategory(event.target.value as TrainingCategory)} className="field">
                   <option value="weighted_reps">Weighted strength</option>
                   <option value="bodyweight_reps">Bodyweight</option>
                   <option value="cardio">Cardio</option>
                 </select>
               </div>
-              {formError && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{formError}</p>}
-              <button type="submit" className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 font-medium text-white hover:bg-emerald-800 disabled:opacity-60">{isSaving ? 'Adding…' : 'Add training type'}</button>
+              {formError && <p role="alert" className="notice notice-error">{formError}</p>}
+              <button type="submit" className="btn btn-primary">{isSaving ? 'Adding…' : 'Add to library'}</button>
             </fieldset>
           </form>
 
@@ -109,7 +112,7 @@ function TrainingLibrary({ onBack, onSignedOut, backLabel = 'Back to history', h
               ))}
             </ul>
           )}
-        </>
+        </div>
       )}
     </section>
   )

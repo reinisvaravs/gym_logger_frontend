@@ -3,6 +3,7 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { getTrainingSessions, type TrainingSession, type TrainingSessionFilters } from '../api/trainingSessions'
 import HistoryFilters from './HistoryFilters'
 import { formatDisplayDate } from '../formatDate'
+import AppIcon from './AppIcon'
 
 type TrainingHistoryProps = {
   onSignedOut: (message?: string, success?: boolean) => void
@@ -55,10 +56,14 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
 
   return (
     <section aria-labelledby="history-heading">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h2 id="history-heading" className="text-2xl font-semibold">Training history</h2>
-        <Link to={`/history/sessions/new${location.search}`} className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">Log session</Link>
-      </div>
+      <header className="page-heading history-heading">
+        <div>
+          <p className="eyebrow">YOUR TRAINING LOG</p>
+          <h2 id="history-heading">Training history</h2>
+          <p className="page-subtitle">Your work, recorded. Find a session or start the next one.</p>
+        </div>
+        {!isLoading && !error && <span className="history-total">{sessions.length} {sessions.length === 1 ? 'session' : 'sessions'}{hasFilters ? ' found' : ''}</span>}
+      </header>
 
       <HistoryFilters
         key={params.toString()}
@@ -76,44 +81,41 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
       />
 
       {isLoading ? (
-        <p role="status" className="text-slate-600 dark:text-slate-300">Loading training history…</p>
+        <p role="status" className="loading-state">Loading training history…</p>
       ) : error ? (
-        <div className="rounded-xl border border-red-200 dark:border-red-900 bg-white dark:bg-slate-900 p-6">
-          <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>
-          <button type="button" onClick={retry} className="mt-3 cursor-pointer font-medium text-emerald-700 dark:text-emerald-400 underline">
+        <div className="panel panel-danger">
+          <p role="alert" className="notice notice-error">{error}</p>
+          <button type="button" onClick={retry} className="text-link mt-3">
             Try again
           </button>
         </div>
       ) : sessions.length === 0 ? (
-        <p className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 text-slate-600 dark:text-slate-300">
-          {hasFilters ? 'No sessions match these filters.' : 'No training sessions yet.'}
-        </p>
+        <div className="empty-state">
+          <span className="empty-symbol"><AppIcon name={hasFilters ? 'search' : 'training'} className="h-7 w-7" /></span>
+          <h3>{hasFilters ? 'No matching sessions' : 'Your next session starts here'}</h3>
+          <p>{hasFilters ? 'Try another exercise name or adjust your date range.' : 'Choose an exercise, add your sets, and build a record you can come back to.'}</p>
+          {!hasFilters && <Link to="/history/sessions/new" className="btn btn-primary"><AppIcon name="plus" className="h-4 w-4" />Log your first session</Link>}
+        </div>
       ) : (
-        <ul className="space-y-3">
-          {sessions.map((session) => (
-            <li key={session.id}>
-              <article className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <h3 className="min-w-0 break-words font-semibold">
-                    <Link
-                      to={`/history/sessions/${session.id}${location.search}`}
-                      className="cursor-pointer text-left text-emerald-700 dark:text-emerald-400 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400"
-                    >
-                      {session.training_name}
-                    </Link>
-                  </h3>
-                  <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-1 text-xs text-slate-600 dark:text-slate-300">
-                    {session.category === 'cardio' ? 'Cardio' : 'Strength'}
-                  </span>
-                </div>
-                <time dateTime={session.performed_on} className="mt-1 block text-sm text-slate-500 dark:text-slate-400">
-                  {formatDisplayDate(session.performed_on)}
-                </time>
-                {session.notes && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-slate-600 dark:text-slate-300">{session.notes}</p>}
-              </article>
-            </li>
-          ))}
-        </ul>
+        <div className="history-list">
+          <div className="list-caption"><span>{hasFilters ? 'Matching sessions' : 'All sessions'}</span><span>Newest first</span></div>
+          <ul>
+            {sessions.map((session) => (
+              <li key={session.id}>
+                <Link to={`/history/sessions/${session.id}${location.search}`} className="history-row">
+                  <span className="exercise-symbol"><AppIcon name={session.category === 'cardio' ? 'activity' : 'training'} /></span>
+                  <div className="min-w-0">
+                    <span className="history-row-title break-words">{session.training_name}</span>
+                    <span className="history-row-meta"><time dateTime={session.performed_on}>{formatDisplayDate(session.performed_on)}</time><span aria-hidden="true">·</span><span>{session.category === 'cardio' ? 'Cardio' : session.category === 'bodyweight_reps' ? 'Bodyweight' : 'Weighted strength'}</span></span>
+                    {session.notes && <p className="history-row-note">{session.notes}</p>}
+                  </div>
+                  <span className={`badge ${session.category !== 'cardio' ? 'badge-strength' : ''}`}>{session.category === 'cardio' ? 'CARDIO' : 'STRENGTH'}</span>
+                  <AppIcon name="chevron" className="h-4 w-4 text-slate-400" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </section>
   )

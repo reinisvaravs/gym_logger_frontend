@@ -13,7 +13,7 @@ function HistoryFilters({ initialFilters, isLoading, onApply }: HistoryFiltersPr
   const [from, setFrom] = useState(initialFilters.from)
   const [to, setTo] = useState(initialFilters.to)
   const [error, setError] = useState('')
-  const inputClass = 'mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 focus:outline-emerald-700 dark:focus:outline-emerald-400'
+  const inputClass = 'field'
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -36,10 +36,10 @@ function HistoryFilters({ initialFilters, isLoading, onApply }: HistoryFiltersPr
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5" aria-label="Filter training history">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="filter-panel" aria-label="Filter training history">
+      <div className="filter-fields">
         <div>
-          <label htmlFor="history-search" className="block text-sm font-medium">Exercise or activity</label>
+          <label htmlFor="history-search" className="block text-sm font-medium">Search sessions</label>
           <input id="history-search" type="search" value={search} onChange={(event) => setSearch(event.target.value)} maxLength={100} placeholder="Search by name" className={inputClass} />
         </div>
         <div>
@@ -59,10 +59,10 @@ function HistoryFilters({ initialFilters, isLoading, onApply }: HistoryFiltersPr
           <input id="history-to" type="date" value={to} onChange={(event) => setTo(event.target.value)} className={inputClass} />
         </div>
       </div>
-      {error && <p role="alert" className="mt-4 text-sm text-red-700 dark:text-red-400">{error}</p>}
-      <div className="mt-4 flex flex-wrap gap-3">
-        <button type="submit" disabled={isLoading} className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60">Apply filters</button>
-        <button type="button" disabled={isLoading} onClick={clear} className="cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60">Clear filters</button>
+      {error && <p role="alert" className="notice notice-error">{error}</p>}
+      <div className="filter-actions">
+        <button type="submit" disabled={isLoading} className="btn btn-primary">Apply filters</button>
+        <button type="button" disabled={isLoading} onClick={clear} className="btn btn-secondary">Reset</button>
       </div>
     </form>
   )

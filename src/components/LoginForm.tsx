@@ -31,9 +31,10 @@ function LoginForm({ onLogin, onRegister, initialEmail = '' }: LoginFormProps) {
   }
 
   return (
-    <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm sm:p-8" aria-labelledby="login-heading">
-      <h2 id="login-heading" className="text-2xl font-semibold">Log in</h2>
-      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Sign in to view your training.</p>
+    <section className="auth-card" aria-labelledby="login-heading">
+      <p className="eyebrow">BACK TO YOUR TRAINING</p>
+      <h2 id="login-heading" className="text-2xl font-semibold">Welcome back.</h2>
+      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Log in to your personal training space.</p>
 
       <form onSubmit={handleSubmit} className="mt-6" aria-busy={isSubmitting}>
         <fieldset disabled={isSubmitting} className="space-y-5">
@@ -47,7 +48,7 @@ function LoginForm({ onLogin, onRegister, initialEmail = '' }: LoginFormProps) {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100 dark:disabled:bg-slate-800"
+              className="field"
             />
           </div>
 
@@ -63,20 +64,20 @@ function LoginForm({ onLogin, onRegister, initialEmail = '' }: LoginFormProps) {
               maxLength={255}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2.5 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 disabled:bg-slate-100 dark:disabled:bg-slate-800"
+              className="field"
             />
           </div>
 
-          {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p>}
+          {error && <p role="alert" className="notice notice-error">{error}</p>}
 
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-lg bg-emerald-700 px-4 py-2.5 font-medium text-white hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:focus-visible:outline-emerald-400 disabled:cursor-wait disabled:opacity-60"
+            className="btn btn-primary w-full"
           >
             {isSubmitting ? 'Logging in…' : 'Log in'}
           </button>
 
-          <button type="button" onClick={onRegister} className="w-full cursor-pointer text-sm font-medium text-emerald-700 dark:text-emerald-400 underline disabled:cursor-wait disabled:opacity-60">
+          <button type="button" onClick={onRegister} className="text-link w-full justify-center">
             Create an account
           </button>
         </fieldset>

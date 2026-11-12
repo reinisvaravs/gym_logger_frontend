@@ -15,8 +15,8 @@ export function NewSessionPage({ onSignedOut }: SessionPageProps) {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mb-6 flex gap-2 text-sm text-slate-500 dark:text-slate-400">
-        <Link to={parentUrl} className="text-emerald-700 underline dark:text-emerald-400">{section === 'calendar' ? 'Calendar' : 'History'}</Link>
+      <nav aria-label="Breadcrumb" className="session-breadcrumb">
+        <Link to={parentUrl} >{section === 'calendar' ? 'Calendar' : 'History'}</Link>
         <span aria-hidden="true">/</span><span aria-current="page">Log session</span>
       </nav>
       <CreateSessionForm
@@ -40,8 +40,8 @@ export function SessionDetailPage({ onSignedOut }: SessionPageProps) {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mb-6 flex gap-2 text-sm text-slate-500 dark:text-slate-400">
-        <Link to={parentUrl} className="text-emerald-700 underline dark:text-emerald-400">{section === 'calendar' ? 'Calendar' : 'History'}</Link>
+      <nav aria-label="Breadcrumb" className="session-breadcrumb">
+        <Link to={parentUrl} >{section === 'calendar' ? 'Calendar' : 'History'}</Link>
         <span aria-hidden="true">/</span><span aria-current="page">Session details</span>
       </nav>
       <SessionDetails key={sessionId} hideBack sessionId={sessionId || ''} onSignedOut={onSignedOut} onBack={() => navigate(parentUrl, { replace: true })} />
