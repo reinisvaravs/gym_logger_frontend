@@ -21,12 +21,13 @@ The API URL defaults to `http://localhost:4000`. To change it, copy `.env.exampl
 - Cookie-based authentication and session restoration through `GET /me`.
 - Training history with exercise names, dates, categories, and notes.
 - Session details with ordered strength/cardio sets and measurement units.
+- Editing session dates and notes from the detail screen.
 - Training library with creating, renaming, archiving, restoring, and deleting unused types.
 - Session logging with an active type, date, notes, and multiple strength/cardio sets.
 - Loading, empty, and error states with retry.
 - Logout and return to login when history requests report an expired session.
 
-Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Session and saved-set editing screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
+Create an account from the login screen. Registration returns to login with the email prefilled; it does not log in automatically. Saved-set editing and session deletion screens are not implemented yet. The browser manages the HTTP-only session cookie; no token is stored in localStorage.
 
 ## Manual checks
 
@@ -62,6 +63,15 @@ Session logging checks:
 - Stop the backend before saving; check that input remains available for retry.
 
 Session positions are chosen from the latest sessions on the selected date just before saving. If another request takes that position first, the backend returns a conflict; submitting again fetches the positions again.
+
+Session editing checks:
+
+- Open a session and choose Edit session; date and notes should be prefilled.
+- Change notes, save, and confirm the details update. Clear notes and save again.
+- Move a session to another date; it should appear after that date's existing sessions.
+- Return to history and confirm the new date and notes are visible.
+- Edit and cancel; no data should change.
+- Stop the backend before saving; the form should show an error and retain input.
 
 Repeated registration/login attempts may trigger the backend's shared authentication rate limit.
 

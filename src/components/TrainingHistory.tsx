@@ -90,7 +90,10 @@ function TrainingHistory({ onSignedOut }: TrainingHistoryProps) {
       <SessionDetails
         key={selectedSessionId}
         sessionId={selectedSessionId}
-        onBack={() => setSelectedSessionId(null)}
+        onBack={() => {
+          setSelectedSessionId(null)
+          retry()
+        }}
         onSignedOut={onSignedOut}
       />
     )

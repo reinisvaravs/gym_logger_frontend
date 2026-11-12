@@ -31,6 +31,32 @@ export type TrainingSessionDetails = TrainingSession & {
   sets: TrainingSet[]
 }
 
+export type TrainingSessionUpdate = {
+  performed_on: string
+  session_order: number
+  notes: string | null
+}
+
+export async function updateTrainingSession(
+  id: string,
+  performedOn: string,
+  sessionOrder: number,
+  notes: string,
+): Promise<TrainingSessionUpdate | null> {
+  const response = await fetch(`${apiUrl}/training-sessions/${id}`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ performedOn, sessionOrder, notes: notes.trim() || null }),
+  })
+  if (response.status === 401) return null
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.message || 'Could not update this training session.')
+  }
+  return response.json()
+}
+
 export async function getTrainingSession(id: string): Promise<TrainingSessionDetails | null> {
   const response = await fetch(`${apiUrl}/training-sessions/${id}`, {
     credentials: 'include',

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getTrainingSession, type TrainingSessionDetails } from '../api/trainingSessions'
+import EditSessionForm from './EditSessionForm'
 
 type SessionDetailsProps = {
   sessionId: string
@@ -12,6 +13,8 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [retryCount, setRetryCount] = useState(0)
+  const [isEditing, setIsEditing] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     let active = true
@@ -43,6 +46,19 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
     setRetryCount(retryCount + 1)
   }
 
+  if (isEditing && session) {
+    return <EditSessionForm
+      session={session}
+      onSignedOut={onSignedOut}
+      onCancel={() => setIsEditing(false)}
+      onSaved={(updated) => {
+        setSession({ ...session, ...updated })
+        setIsEditing(false)
+        setSuccessMessage('Session updated.')
+      }}
+    />
+  }
+
   return (
     <section aria-label="Session details">
       <button
@@ -65,7 +81,10 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
       ) : session && (
         <>
           <header className="mb-6">
-            <h2 className="break-words text-2xl font-semibold">{session.training_name}</h2>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <h2 className="min-w-0 break-words text-2xl font-semibold">{session.training_name}</h2>
+              <button type="button" onClick={() => { setSuccessMessage(''); setIsEditing(true) }} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100">Edit session</button>
+            </div>
             <p className="mt-2 text-sm text-slate-600">
               <time dateTime={session.performed_on}>{session.performed_on}</time>
               {' · '}
@@ -73,6 +92,8 @@ function SessionDetails({ sessionId, onBack, onSignedOut }: SessionDetailsProps)
             </p>
             {session.notes && <p className="mt-4 whitespace-pre-wrap break-words text-slate-600">{session.notes}</p>}
           </header>
+
+          {successMessage && <p role="status" className="mb-4 text-sm text-emerald-800">{successMessage}</p>}
 
           <h3 className="mb-3 text-lg font-semibold">Sets</h3>
           {session.sets.length === 0 && <p className="text-slate-600">No sets saved.</p>}
