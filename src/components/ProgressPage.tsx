@@ -3,11 +3,11 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { getStatistics, type Statistics } from '../api/statistics'
 import { useUnits } from '../UnitsContext'
 import { displayDistance } from '../units'
-import { formatDisplayDate } from '../formatDate'
 import { formatNumber, formatStatsDuration } from '../formatStats'
 import ProgressMetric from './ProgressMetric'
 import StrengthProgress from './StrengthProgress'
 import CardioProgress from './CardioProgress'
+import WeeklyActivityChart from './WeeklyActivityChart'
 
 type View = 'overview' | 'strength' | 'cardio'
 type ProgressPageProps = { onSignedOut: () => void }
@@ -122,12 +122,7 @@ function ProgressContent({ from, to, view, exerciseId, activityId, weight, onSel
     </div>
     <section className="panel"><div className="progress-panel-heading"><div><h3>Weekly consistency</h3><p>Latest 12 weeks within your selected period. Weeks start on Monday.</p></div></div>
       <div className="activity-legend"><span><i className="strength-key" />Strength days</span><span><i className="cardio-key" />Cardio days</span></div>
-      <div className="activity-chart" role="group" aria-label="Weekly strength and cardio training days">
-        {data.weekly.map((week) => <div key={week.week} className="activity-week"><div className="activity-bars">
-          <div className="activity-bar strength-key" style={{ height: `${week.strength_days / 7 * 100}%` }} tabIndex={0} role="img" aria-label={`Week of ${formatDisplayDate(week.week)}: ${week.strength_days} strength days`}><span>{week.strength_days || ''}</span></div>
-          <div className="activity-bar cardio-key" style={{ height: `${week.cardio_days / 7 * 100}%` }} tabIndex={0} role="img" aria-label={`Week of ${formatDisplayDate(week.week)}: ${week.cardio_days} cardio days`}><span>{week.cardio_days || ''}</span></div>
-        </div><small>{formatDisplayDate(week.week)}</small></div>)}
-      </div>
+      <WeeklyActivityChart weeks={data.weekly} />
       <p className="progress-note">A day with both strength and cardio counts in both bars, but once in the training-day total. First and last weeks may be partial for your selected dates.</p>
     </section>
     <div className="progress-overview-links"><button type="button" className="panel" onClick={() => onSelect('view', 'strength')}><h3>Strength progress →</h3><p>Reps at the same weight, records, weekly sets, and exercise history.</p></button><button type="button" className="panel" onClick={() => onSelect('view', 'cardio')}><h3>Cardio progress →</h3><p>Duration, distance, milestones, and speed with measurement coverage.</p></button></div>

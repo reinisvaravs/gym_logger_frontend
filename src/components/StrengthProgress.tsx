@@ -41,7 +41,7 @@ function StrengthProgress({ exercise, weight, onWeightChange }: StrengthProgress
           {exercise.records.map((row) => <option key={String(row.weight_kg)} value={String(row.weight_kg)}>{weightLabel(row.weight_kg)}</option>)}
         </select></label>
       </div>
-      <ProgressChart title="Best reps at selected weight" unit="reps" points={record?.progress || []} />
+      <ProgressChart title="Best reps" context={exercise.name} unit="reps" points={(record?.progress || []).map((point) => ({ ...point, details: [{ label: isBodyweight ? 'Added weight' : 'Weight', value: weightLabel(record.weight_kg) }] }))} />
     </section>
 
     <section className="panel"><div className="progress-panel-heading"><div><h3>Records by weight</h3><p>Highest recorded reps at each weight in this period. Ties show the first achievement.</p></div></div>
@@ -54,7 +54,7 @@ function StrengthProgress({ exercise, weight, onWeightChange }: StrengthProgress
       <label className="progress-select">Measurement<select className="field" value={weeklyMetric} onChange={(event) => setWeeklyMetric(event.target.value as typeof weeklyMetric)}>
         <option value="sets">Sets</option><option value="reps">Reps</option>{!isBodyweight && <option value="volume">Recorded load × reps</option>}
       </select></label></div>
-      <ProgressChart title="Weekly training volume" unit={weeklyMetric === 'volume' ? `${unit} × reps` : weeklyMetric} points={exercise.weekly.map((week) => ({ date: week.week, value: weeklyMetric === 'volume' ? displayWeight(week.volume, unitSystem) : week[weeklyMetric] }))} />
+      <ProgressChart title="Weekly training volume" context={exercise.name} weekly unit={weeklyMetric === 'volume' ? `${unit} × reps` : weeklyMetric} points={exercise.weekly.map((week) => ({ date: week.week, value: weeklyMetric === 'volume' ? displayWeight(week.volume, unitSystem) : week[weeklyMetric], details: [{ label: 'Sets', value: formatNumber(week.sets) }, { label: 'Reps', value: formatNumber(week.reps) }, ...(!isBodyweight ? [{ label: 'Recorded load × reps', value: `${formatNumber(displayWeight(week.volume, unitSystem))} ${unit} × reps` }] : [])] }))} />
       <p className="progress-note">The current week may be incomplete. {weeklyMetric === 'volume' ? 'Volume describes recorded work, not strength. Dumbbell loads retain the per-dumbbell convention.' : 'Sets and reps describe training amount, not performance on their own.'}</p>
     </section>
 

@@ -28,17 +28,23 @@ function CardioProgress({ activity }: { activity: CardioStatistics }) {
     </div>
     <section className="panel">
       <div className="progress-panel-heading"><div><h3>Average speed progress</h3><p>Average speed per session in the selected period ({speedUnit}). Select a point to open the session.</p></div></div>
-      <ProgressChart title="Average speed progress" unit={speedUnit} points={activity.history.map((session) => ({
+      <ProgressChart title="Average speed" context={activity.name} unit={speedUnit} points={activity.history.map((session) => ({
         date: session.date,
         value: session.average_speed_kmh === null ? null : displaySpeed(session.average_speed_kmh, unitSystem),
         session_id: session.id,
+        details: [
+          { label: 'Duration', value: formatStatsDuration(session.duration_seconds) },
+          { label: 'Distance', value: distance(session.distance_km) },
+          { label: 'Avg. heart rate', value: session.average_heart_rate_bpm === null ? 'Not recorded' : `${formatNumber(session.average_heart_rate_bpm)} bpm` },
+          { label: 'Distance coverage', value: `${session.distance_sets}/${session.set_count} sets` },
+        ],
       }))} />
       <p className="progress-note">Speed uses logged duration. Missing measurements leave gaps; routes, terrain, and conditions affect comparisons.</p>
     </section>
     <section className="panel"><div className="progress-panel-heading"><div><h3>Weekly activity</h3><p>Latest 12 weeks within the selected period. Indoor and outdoor activities stay separate.</p></div>
       <label className="progress-select">Measurement<select className="field" value={measurement} onChange={(event) => setMeasurement(event.target.value as typeof measurement)}><option value="duration">Duration</option><option value="distance">Distance</option></select></label>
     </div>
-      <ProgressChart title={`Weekly ${measurement}`} unit={measurement === 'duration' ? 'hours' : unit} points={activity.weekly.map((week) => ({ date: week.week, value: measurement === 'duration' ? week.duration_seconds / 3600 : week.distance_km === null ? null : displayDistance(week.distance_km, unitSystem) }))} />
+      <ProgressChart title={`Weekly ${measurement}`} context={activity.name} weekly unit={measurement === 'duration' ? 'hours' : unit} points={activity.weekly.map((week) => ({ date: week.week, value: measurement === 'duration' ? week.duration_seconds / 3600 : week.distance_km === null ? null : displayDistance(week.distance_km, unitSystem), details: [{ label: 'Duration', value: formatStatsDuration(week.duration_seconds) }, { label: 'Distance', value: distance(week.distance_km) }, { label: 'Distance coverage', value: `${week.distance_sets}/${week.set_count} sets` }] }))} />
       <p className="progress-note">The current week may be incomplete. Missing distance is unknown, not zero. Recorded distance may cover only part of a week.</p>
     </section>
     <div className="progress-metrics">

@@ -316,3 +316,25 @@
   .progress-overview-links { grid-template-columns: 1fr; }
   .progress-tabs button { flex: 1; padding-inline: 10px; }
 }
+
+/* Chart details stay readable instead of shrinking with the SVG. */
+.progress-chart, .weekly-chart-container { position: relative; }
+.chart-tooltip { position: absolute; top: 4px; z-index: 5; width: 240px; max-width: 100%; box-sizing: border-box; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); box-shadow: 0 8px 30px #0003; pointer-events: none; font-size: 12px; line-height: 1.5; }
+.chart-tooltip-date { color: var(--muted); font-size: 11px; margin-bottom: 5px; }
+.chart-tooltip-context { font-weight: 600; margin-bottom: 9px; overflow-wrap: anywhere; }
+.chart-tooltip-value { display: grid; gap: 3px; }
+.chart-tooltip-value > span { color: var(--muted); font-size: 11px; }
+.chart-tooltip-value strong { font-size: 20px; font-weight: 650; }
+.chart-tooltip dl { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 8px; display: grid; gap: 7px; }
+.chart-tooltip dl > div { display: flex; justify-content: space-between; gap: 12px; }
+.chart-tooltip dt { color: var(--muted); }
+.chart-tooltip dd { text-align: right; font-weight: 500; }
+.chart-guide { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; }
+.activity-week:hover .activity-bars, .activity-week:focus-visible .activity-bars { background-color: var(--accent-soft); }
+.chart-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-bottom: 12px; color: var(--muted); font-size: 11px; }
+.chart-legend span { display: flex; align-items: center; gap: 8px; }
+.chart-legend i { display: inline-block; width: 22px; height: 3px; border-radius: 3px; }
+.chart-legend-recorded { background: var(--accent); }
+.chart-legend-trend { background: #73a0a7; }
+.chart-trend-line { stroke: #73a0a7; pointer-events: none; }
+.progress-chart .chart-tooltip { top: 36px; }
