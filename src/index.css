@@ -338,3 +338,4 @@
 .chart-legend-trend { background: #73a0a7; }
 .chart-trend-line { stroke: #73a0a7; pointer-events: none; }
 .progress-chart .chart-tooltip { top: 36px; }
+.chart-scale-note { margin-top: 4px; color: var(--muted); font-size: 10px; }

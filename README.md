@@ -232,3 +232,5 @@ See [the backend API reference](../backend/API-REFERENCE.md) for request and res
 Progress uses one authenticated `/statistics` response, with charts drawn using SVG and existing app styles. No chart dependency or stored statistics table is added. Only logged exercises appear in selectors; archived exercises with history remain included.
 
 Chart tooltips show dates, values, units, and relevant set/activity details on hover, keyboard focus, or touch. Line charts retain straight dot-to-dot recorded values and overlay a curved trailing average of up to eight recorded entries in the selected series/period. The trend uses no future values, missing measurements remain gaps, and tooltip values distinguish the recorded value from the smoothed average. Weekly consistency tooltips show both strength and cardio days.
+
+Line-chart vertical axes fit the non-missing recorded values with padding, making small differences visible. Zero remains in range when it is actually recorded (including zero-activity weeks); missing values do not pull the axis down to zero. Constant/single-point series retain a nonzero axis range.

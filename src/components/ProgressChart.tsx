@@ -24,9 +24,15 @@ function ProgressChart({ title, unit, points, context, weekly }: ProgressChartPr
   const width = 700, height = 230, left = 55, right = 20, top = 20, bottom = 42
   const dates = points.map((point) => Date.parse(point.date))
   const first = Math.min(...dates), last = Math.max(...dates)
-  const max = Math.max(1, ...points.map((point) => point.value ?? 0))
+  const values = points.flatMap((point) => point.value === null ? [] : [point.value])
+  const lowest = Math.min(...values), highest = Math.max(...values)
+  const padding = highest > lowest ? (highest - lowest) * 0.12 : Math.max(highest * 0.02, 0.1)
+  const min = Math.max(0, lowest - padding)
+  const max = highest + padding
+  const ticks = Array.from({ length: 5 }, (_, index) => min + (max - min) * index / 4)
+  const tickDecimals = Math.min(6, Math.max(2, Math.ceil(-Math.log10((max - min) / 4))))
   const x = (index: number) => first === last ? width / 2 : left + (dates[index] - first) / (last - first) * (width - left - right)
-  const y = (value: number) => top + (1 - value / max) * (height - top - bottom)
+  const y = (value: number) => top + (1 - (value - min) / (max - min)) * (height - top - bottom)
   // Missing measurements break the line instead of becoming zero.
   let path = '', connected = false
   points.forEach((point, index) => {
@@ -77,9 +83,9 @@ function ProgressChart({ title, unit, points, context, weekly }: ProgressChartPr
       <div className="chart-legend" aria-label="Chart lines"><span><i className="chart-legend-recorded" />Recorded values</span><span><i className="chart-legend-trend" />Smooth trend · up to 8-entry average</span></div>
       {selected && <ChartTooltip id={tooltipId} date={selected.date} label={title} value={selected.value === null ? 'Not recorded' : `${formatNumber(selected.value)} ${unit}`} context={context} weekly={weekly} left={x(active!) / width * 100} details={[...(selected.details || []), { label: 'Smoothed trend', value: selectedTrend == null ? 'Not recorded' : `${formatNumber(selectedTrend)} ${unit}` }]} /> }
       <svg onPointerMove={showNearest} onPointerDown={showNearest} onPointerLeave={(event) => { if (event.pointerType !== 'touch' && !event.currentTarget.contains(document.activeElement)) setActive(null) }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setActive(null) }} viewBox={`0 0 ${width} ${height}`} role="group" aria-label={`${title}. ${unit}. Recorded values and a smoothed trailing 8-entry average. Hover anywhere or focus a point for details. Press Escape to dismiss.`}>
-        {[0, max / 2, max].map((value) => <g key={value}>
+        {ticks.map((value) => <g key={value}>
           <line x1={left} x2={width - right} y1={y(value)} y2={y(value)} className="chart-grid" />
-          <text x={left - 10} y={y(value) + 4} textAnchor="end">{formatNumber(value)}</text>
+          <text x={left - 10} y={y(value) + 4} textAnchor="end">{value.toLocaleString('en-GB', { maximumFractionDigits: tickDecimals })}</text>
         </g>)}
         {selected && active !== null && <line x1={x(active)} x2={x(active)} y1={top} y2={height - bottom} className="chart-guide" />}
         <path d={path} fill="none" stroke="var(--accent)" strokeWidth="2" />
@@ -91,6 +97,7 @@ function ProgressChart({ title, unit, points, context, weekly }: ProgressChartPr
         ))}
         {labels.map((index) => <text key={index} x={x(index)} y={height - 12} textAnchor={index === 0 && points.length > 1 ? 'start' : index === points.length - 1 && points.length > 1 ? 'end' : 'middle'}>{formatDisplayDate(points[index].date)}</text>)}
       </svg>
+      <p className="chart-scale-note">Vertical axis fits the recorded range.</p>
     </div>
   )
 }
