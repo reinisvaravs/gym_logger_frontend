@@ -26,6 +26,15 @@ function CardioProgress({ activity }: { activity: CardioStatistics }) {
       <ProgressMetric label="Average speed" value={speed(summary.average_speed_kmh)} detail="Total eligible distance ÷ logged duration" />
       <ProgressMetric label="Average heart rate" value={summary.average_heart_rate_bpm === null ? '—' : `${formatNumber(summary.average_heart_rate_bpm)} bpm`} detail={`Duration-weighted; ${summary.heart_rate_sets} of ${summary.set_count} sets`} />
     </div>
+    <section className="panel">
+      <div className="progress-panel-heading"><div><h3>Average speed progress</h3><p>Average speed per session in the selected period ({speedUnit}). Select a point to open the session.</p></div></div>
+      <ProgressChart title="Average speed progress" unit={speedUnit} points={activity.history.map((session) => ({
+        date: session.date,
+        value: session.average_speed_kmh === null ? null : displaySpeed(session.average_speed_kmh, unitSystem),
+        session_id: session.id,
+      }))} />
+      <p className="progress-note">Speed uses logged duration. Missing measurements leave gaps; routes, terrain, and conditions affect comparisons.</p>
+    </section>
     <section className="panel"><div className="progress-panel-heading"><div><h3>Weekly activity</h3><p>Latest 12 weeks within the selected period. Indoor and outdoor activities stay separate.</p></div>
       <label className="progress-select">Measurement<select className="field" value={measurement} onChange={(event) => setMeasurement(event.target.value as typeof measurement)}><option value="duration">Duration</option><option value="distance">Distance</option></select></label>
     </div>

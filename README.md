@@ -223,6 +223,7 @@ See [the backend API reference](../backend/API-REFERENCE.md) for request and res
 - Pull-ups show bodyweight reps without inferring body weight; zero/empty added weight are grouped together. Dumbbell loads remain per dumbbell.
 - Switch weekly sets/reps/recorded volume; volume is available only for weighted exercises and is not a strength score.
 - Select indoor/outdoor cardio separately. Missing distance/heart rate should show a dash, never a fabricated zero. Coverage states how many sets have measurements.
+- Check the average-speed progress chart for the selected cardio activity: one point per session, km/h or mph according to Settings, gaps for missing speed, and links to session details.
 - Average speed uses eligible total distance / duration; heart rate is duration-weighted over available readings. Compare a long and a short ride to check weighting.
 - Select a record/chart point/history date; open session details and use the Progress breadcrumb. Selection and dates should remain. Editing/deleting a session should update statistics on return.
 - Change units in Settings; weights, distance, speed, and recorded volume should convert. Check both themes and mobile widths.
