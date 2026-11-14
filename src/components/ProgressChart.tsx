@@ -27,11 +27,16 @@ function ProgressChart({ title, unit, points, context, weekly }: ProgressChartPr
   const values = points.flatMap((point) => point.value === null ? [] : [point.value])
   const lowest = Math.min(...values), highest = Math.max(...values)
   const padding = highest > lowest ? (highest - lowest) * 0.12 : Math.max(highest * 0.02, 0.1)
-  const min = Math.max(0, lowest - padding)
-  const max = highest + padding
-  const ticks = Array.from({ length: 5 }, (_, index) => min + (max - min) * index / 4)
-  const tickDecimals = Math.min(6, Math.max(2, Math.ceil(-Math.log10((max - min) / 4))))
-  const x = (index: number) => first === last ? width / 2 : left + (dates[index] - first) / (last - first) * (width - left - right)
+  const lower = Math.max(0, Math.floor(lowest - padding))
+  const upper = Math.ceil(highest + padding)
+  const roughStep = Math.max(1, (upper - lower) / 5)
+  const magnitude = 10 ** Math.floor(Math.log10(roughStep))
+  const step = ([1, 2, 5, 10].find((size) => size * magnitude >= roughStep) ?? 10) * magnitude
+  const min = step >= 10 ? Math.floor(lower / step) * step : lower
+  const max = min + Math.max(1, Math.ceil((upper - min) / step)) * step
+  const ticks = Array.from({ length: Math.round((max - min) / step) + 1 }, (_, index) => min + index * step)
+  const dateX = (date: number) => first === last ? width / 2 : left + (date - first) / (last - first) * (width - left - right)
+  const x = (index: number) => dateX(dates[index])
   const y = (value: number) => top + (1 - (value - min) / (max - min)) * (height - top - bottom)
   // Missing measurements break the line instead of becoming zero.
   let path = '', connected = false
@@ -63,7 +68,11 @@ function ProgressChart({ title, unit, points, context, weekly }: ProgressChartPr
   })
   const selected = active === null ? null : points[active]
   const selectedTrend = active === null ? null : trend[active]
-  const labels = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])]
+  const labelCount = Math.min(7, Math.round((last - first) / 86400000) + 1)
+  const labels = Array.from({ length: labelCount }, (_, index) => {
+    const time = labelCount === 1 ? first : first + (last - first) * index / (labelCount - 1)
+    return Math.round(time / 86400000) * 86400000
+  })
 
   function showNearest(event: PointerEvent<SVGSVGElement>) {
     const rect = event.currentTarget.getBoundingClientRect()
@@ -85,7 +94,7 @@ function ProgressChart({ title, unit, points, context, weekly }: ProgressChartPr
       <svg onPointerMove={showNearest} onPointerDown={showNearest} onPointerLeave={(event) => { if (event.pointerType !== 'touch' && !event.currentTarget.contains(document.activeElement)) setActive(null) }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setActive(null) }} viewBox={`0 0 ${width} ${height}`} role="group" aria-label={`${title}. ${unit}. Recorded values and a smoothed trailing 8-entry average. Hover anywhere or focus a point for details. Press Escape to dismiss.`}>
         {ticks.map((value) => <g key={value}>
           <line x1={left} x2={width - right} y1={y(value)} y2={y(value)} className="chart-grid" />
-          <text x={left - 10} y={y(value) + 4} textAnchor="end">{value.toLocaleString('en-GB', { maximumFractionDigits: tickDecimals })}</text>
+          <text x={left - 10} y={y(value) + 4} textAnchor="end">{formatNumber(value)}</text>
         </g>)}
         {selected && active !== null && <line x1={x(active)} x2={x(active)} y1={top} y2={height - bottom} className="chart-guide" />}
         <path d={path} fill="none" stroke="var(--accent)" strokeWidth="2" />
@@ -95,7 +104,7 @@ function ProgressChart({ title, unit, points, context, weekly }: ProgressChartPr
             <circle cx={x(index)} cy={y(point.value)} r={active === index ? 7 : 5} className="chart-point" />
           </Link> : <circle key={point.date} cx={x(index)} cy={y(point.value)} r={active === index ? 7 : 4} className="chart-point" tabIndex={0} onFocus={() => setActive(index)} aria-describedby={active === index ? tooltipId : undefined} role="img" aria-label={`${formatDisplayDate(point.date)}: ${formatNumber(point.value)} ${unit}`} />
         ))}
-        {labels.map((index) => <text key={index} x={x(index)} y={height - 12} textAnchor={index === 0 && points.length > 1 ? 'start' : index === points.length - 1 && points.length > 1 ? 'end' : 'middle'}>{formatDisplayDate(points[index].date)}</text>)}
+        {labels.map((date, index) => <text key={date} className={index % 2 === 1 && index !== labels.length - 1 ? 'chart-date-extra' : undefined} x={dateX(date)} y={height - 12} textAnchor={index === 0 && labels.length > 1 ? 'start' : index === labels.length - 1 && labels.length > 1 ? 'end' : 'middle'}>{formatDisplayDate(new Date(date).toISOString().slice(0, 10))}</text>)}
       </svg>
       <p className="chart-scale-note">Vertical axis fits the recorded range.</p>
     </div>
